@@ -113,7 +113,9 @@ body:not(.vertical-collpsed) .app-search{
     }
 }
 .page-content{
-    padding:calc(70px + 20px) calc(20px / 2) 60px calc(20px / 2)
+    padding:calc(70px + 20px) calc(20px / 2) 60px calc(20px / 2);
+    background-color: #22252f;
+    min-height: 100vh;
 }
 .header-item{
     height:70px;
@@ -1278,7 +1280,7 @@ body[data-layout=horizontal][data-layout-size=boxed] .container-fluid,body[data-
     content:"\F0140"
 }
 .custom-accordion .card-body{
-    color:#9699a8
+    columns: #4c4c4c;
 }
 .font-size-10{
     font-size:10px!important
@@ -1531,8 +1533,23 @@ body[data-layout=horizontal][data-layout-size=boxed] .container-fluid,body[data-
     display:none
 }
 .card-radio-input:checked+.card-radio{
-    border-color:#5b73e8!important
+    border-color:#5b73e8!important;
 }
+.card-body{
+    background-color: #343762;
+    color: white!important;
+}
+
+.tab-content{
+    background-color: #343762;
+    color: white!important;
+}
+
+.card{
+    border: none!important;
+    color: white!important;
+}
+
 .card-radio-input:checked+.card-radio:before{
     content:'\e9c3';
     font-family:unicons-line;
@@ -2751,7 +2768,15 @@ input[switch=dark]:checked+label{
 
 .table td, .table th{
     text-align: center;
+    color: white;
 }
+
+.table td a, .table th a{
+    text-align: center;
+    color: yellowgreen!important;
+}
+
+
 
 .signin-other-title .title{
     display:inline-block;

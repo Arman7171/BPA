@@ -2,13 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AddWorkerModal from './AddWorkerModal';
+import DeleteWorkerModal from './DeleteWorkerModal';
 import axios from 'axios';
 import { URL } from '../../../config/config';
+import { Link } from 'react-router-dom';
 
 const Workers = () => {
     const [showModal, setShowModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [errMessage, setErrMessage] = useState('');
     const [workers, setWorkers] = useState([]);
+    const [fullName, setFullName] = useState('');
+    const [id, setId] = useState('');
 
     var token = localStorage.getItem('token');
     const config = {
@@ -31,8 +36,23 @@ const Workers = () => {
         setErrMessage('');
     };
 
-    const removeChecked = () => {
+    const showdeleteModal = (id, fullName) => {
+        setId(id);
+        setFullName(fullName);
+        setShowDeleteModal(!showDeleteModal);
+    }
 
+    const removeWorker = (id) => {
+        axios.delete(`${URL}/worker/delete/${id}`, config)
+        .then((res) => {
+            console.log('my workers', res);
+            const otherWorkers = [...workers]
+            var index = workers.findIndex((worker) => worker.id === id);
+            otherWorkers.splice(index, 1);
+            setWorkers(otherWorkers);
+            setShowDeleteModal(false);
+        })
+        .catch(err => console.log(err.response))
     };
 
     const addWorker = (data) => {
@@ -59,7 +79,7 @@ const Workers = () => {
                                 <h4 className="mb-0">Աշխատակիղներ</h4>
                                 <div className="page-title-right">
                                     <ol className="breadcrumb m-0">
-                                        <li className="breadcrumb-item"><a href="">Contacts</a></li>
+                                        <li className="breadcrumb-item"><Link to="">Contacts</Link></li>
                                         <li className="breadcrumb-item active">User List</li>
                                     </ol>
                                 </div>
@@ -116,16 +136,17 @@ const Workers = () => {
                                                         <tr key={worker.id}>
                                                             <th scope="row">
                                                                 <div className="custom-control custom-checkbox">
-                                                                    <input 
-                                                                        type="checkbox" 
-                                                                        className="custom-control-input"
-                                                                        id={worker.id}
-                                                                    />
-                                                                    <label className="custom-control-label" htmlFor={worker.id}></label>
+                                                                    <h6 
+                                                                        className='text-danger'
+                                                                        style={{cursor: 'pointer'}} 
+                                                                        onClick={() => showdeleteModal(worker.id, worker.fullName)}
+                                                                    >
+                                                                        Հեռացնել
+                                                                    </h6>
                                                                 </div>
                                                             </th>
                                                             <td>
-                                                                <a href="#" className="text-body"> {worker.fullName} </a>
+                                                                <Link to={`/profile/${worker.id}`} className="text-body"> {worker.fullName} </Link>
                                                             </td>
                                                             <td> {worker.branchId} </td>
                                                             <td> {worker.salary} </td>
@@ -138,7 +159,7 @@ const Workers = () => {
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div className="row mt-4">
+                                    {/* <div className="row mt-4">
                                         <div className="col-sm-6">
                                         </div>
                                         <div className="col-sm-6">
@@ -149,7 +170,7 @@ const Workers = () => {
                                                 >Ջնջել ընտրվածները</button>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>
@@ -166,7 +187,7 @@ const Workers = () => {
                         </div>
                         <div className="col-sm-6">
                             <div className="text-sm-right d-none d-sm-block">
-                                Crafted with <i className="mdi mdi-heart text-danger"></i> by <a href="https://themesbrand.com/" target="_blank" className="text-reset">Themesbrand</a>
+                                Crafted with <i className="mdi mdi-heart text-danger"></i> by <Link to="https://themesbrand.com/" target="_blank" className="text-reset">Themesbrand</Link>
                             </div>
                         </div>
                     </div>
@@ -177,6 +198,15 @@ const Workers = () => {
                     onSubmit={addWorker}
                     onCancel={toggleConfirm}
                     message={errMessage}
+                />
+            }
+            {
+                showDeleteModal &&
+                <DeleteWorkerModal
+                    onSubmit={removeWorker}
+                    onCancel={showdeleteModal}
+                    id={id}
+                    fullName={fullName}
                 />
             }
         </div>

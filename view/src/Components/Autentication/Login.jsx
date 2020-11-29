@@ -17,6 +17,9 @@ const Login = (props) => {
         .then((res) => {
             console.log('login', res);
             localStorage.setItem('token', res.data.token);
+            if(res.data.type){
+                localStorage.setItem('type', res.data.type);
+            }
             props.Login();
             props.history.push('/dashboard')
         })

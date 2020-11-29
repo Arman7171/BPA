@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 const Users = require('../model/users');
+const Worker = require('../model/worker');
 const {check, validationResult} = require('express-validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -79,6 +80,7 @@ router.post('/login',
     async (req, res) => {
     try {
         const errors = validationResult(req);
+        var isMatch;
         if(!errors.isEmpty()){
             return res.status(400).json({
                 errors: errors.array(),
@@ -87,20 +89,49 @@ router.post('/login',
         }
         const { email, password } = req.body;
         const user = await Users.findOne({where:{email}, raw: true });
-        const isMatch = await bcrypt.compare(password, user.password);
-        if(!isMatch){
-            return res.status(400).json({ message: 'Սխալ գղթնաբառ' })
+        if(!user){
+            const worker = await Worker.findOne({where:{email}, raw: true });
+            console.log('worker', worker);
+            if(!worker){
+                return res.status(400).json(
+                    {
+                         message: 'Նման հաշիվ գոյություն չունի' ,      
+                    });
+            }
+            else{
+                 isMatch = await bcrypt.compare(password, worker.password);
+                 if(!isMatch){
+                    return res.status(400).json({ message: 'Սխալ գղթնաբառ' })
+                }
+                else{
+                    const token = jwt.sign(
+                        { userId: worker.id },
+                        'jwtSecret',
+                        {expiresIn: '10000h'}
+                    );
+            
+                    console.log('asdasd', token);
+            
+                    res.json({ token, type: 'manager' })
+                }
+            }
         }
         else{
-            const token = jwt.sign(
-                { userId: user.id },
-                'jwtSecret',
-                {expiresIn: '10000h'}
-            );
-    
-            console.log('asdasd', token);
-    
-            res.json({ token })
+             isMatch = await bcrypt.compare(password, user.password);
+             if(!isMatch){
+                return res.status(400).json({ message: 'Սխալ գղթնաբառ' })
+            }
+            else{
+                const token = jwt.sign(
+                    { userId: user.id },
+                    'jwtSecret',
+                    {expiresIn: '10000h'}
+                );
+        
+                console.log('asdasd', token);
+        
+                res.json({ token })
+            }
         }
 
     }catch (e){

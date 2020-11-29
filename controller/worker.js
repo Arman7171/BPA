@@ -51,4 +51,43 @@ router.get('/my-workers',
     }
 )
 
+router.delete('/delete/:id', 
+async (req, res) => {
+    try{
+        const token = req.headers['authorization'].replace('Bearer ','');
+        info = jwt.verify(token, 'jwtSecret');
+        console.log('delete', req.body, info);
+        console.log(req.params.id);
+        let workerId = req.params.id;
+            Workers.destroy({
+                where: {
+                id: workerId,
+                }
+            });
+        
+        res.status(200).json({message: 'worker deleted'});
+    }
+    catch (e){
+        res.status(500).json({ message: 'server error try again' });
+    }
+    }
+)
+
+router.get('/worker-info/:id',
+        async (req, res) => {
+        try{
+            console.log('mtav');
+            const token = req.headers['authorization'].replace('Bearer ','');
+            info = jwt.verify(token, 'jwtSecret');
+            let id = req.params.id;
+            const userWorker = await Workers.findOne({where:{userId: info.userId, id}, raw: true });
+            res.status(200).json(userWorker);
+        }
+        catch (e){
+            res.status(500).json({ message: 'server error try again' });
+        }
+    }
+)
+
+
 module.exports = router;

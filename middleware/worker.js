@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Workers = require('../model/worker');
+const Users = require('../model/users');
 
 const workerMiddleware = async (req, res, next) => {
     let info;
@@ -16,7 +17,13 @@ const workerMiddleware = async (req, res, next) => {
       }
       console.log('info', info);
       const usersWorkers = await Workers.findAll({where:{userId: info.userId}, raw: true });
+      const users = await Users.findAll({ raw: true });
       console.log('usersWorkers-------------------', usersWorkers);
+      for(i in users){
+        if(users[i].email == req.body.email){
+          return res.status(400).json({ error: 'Էլեկրոնային հասցեն զբաղված է'});
+        }
+      }
       for(i in usersWorkers){
         if(usersWorkers[i].email == req.body.email){
           return res.status(400).json({ error: 'Էլեկրոնային հասցեն զբաղված է'});

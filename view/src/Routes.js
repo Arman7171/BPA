@@ -7,6 +7,7 @@ import Dashboard from './Components/Pages/Dashboard';
 import Activate from './Components/Autentication/Activate';
 import Branches from './Components/Pages/Branches/Branches';
 import Workers from './Components/Pages/Workers/Workers';
+import Profile from './Components/Pages/Profile';
 
 export const Routes = (login, isAuthenticated) => {
 
@@ -18,6 +19,7 @@ export const Routes = (login, isAuthenticated) => {
                 <Route path='/dashboard' component={Dashboard} />
                 <Route path='/branches' component={Branches} />
                 <Route path='/workers' component={Workers} />
+                <Route path='/profile/:id' component={Profile} />
                 <Redirect to='/not-found' />
             </Switch>
         );

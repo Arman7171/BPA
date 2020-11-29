@@ -1,7 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { URL } from '../../config/config';
 
 const Home = () => {
+    const [workers, setWorkers] = useState([]);
+    const [branches, setBranches] = useState([]);
+    const [type, setType] = useState(localStorage.getItem('type'));
+    var token = localStorage.getItem('token');
+    const config = {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    };
+
+    useEffect(() => {
+        axios.get(`${URL}/worker/my-workers`, config)
+            .then((res) => {
+                console.log('my workers', res);
+                setWorkers(res.data);
+            })
+            .catch(err => console.log(err.response))
+
+            axios.get(`${URL}/branch/my-branches`, config)
+            .then((res) => {
+                console.log('my branches', res);
+                setBranches(res.data);
+            })
+            .catch(err => console.log(err.response))
+    }, []);
     return (
         <div className="main-content">
             <div className="page-content">
@@ -13,7 +40,7 @@ const Home = () => {
 
                                 <div className="page-title-right">
                                     <ol className="breadcrumb m-0">
-                                        <li className="breadcrumb-item"><a href="">Minible</a></li>
+                                        <li className="breadcrumb-item"><Link to="">Minible</Link></li>
                                         <li className="breadcrumb-item active">Dashboard</li>
                                     </ol>
                                 </div>
@@ -21,7 +48,9 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
-                    
+                    {
+                        type === 'manager' ? null :
+
                     <div className="row">
                             <div className="col-md-6 col-xl-3">
                                 <div className="card">
@@ -30,8 +59,8 @@ const Home = () => {
                                             <div id="total-revenue-chart"></div>
                                         </div>
                                         <div>
-                                            <h4 className="mb-1 mt-1">$<span data-plugin="counterup">34,152</span></h4>
-                                            <p className="text-muted mb-0">Total Revenue</p>
+                                            <h4 className="mb-1 mt-1"><span data-plugin="counterup"> {branches.length} </span></h4>
+                                            <p className="text-muted mb-0">Մասնաճյուղեր</p>
                                         </div>
                                         <p className="text-muted mt-3 mb-0"><span className="text-success mr-1"><i className="mdi mdi-arrow-up-bold ml-1"></i>2.65%</span> since last week
                                         </p>
@@ -46,8 +75,8 @@ const Home = () => {
                                             <div id="orders-chart"> </div>
                                         </div>
                                         <div>
-                                            <h4 className="mb-1 mt-1"><span data-plugin="counterup">5,643</span></h4>
-                                            <p className="text-muted mb-0">Orders</p>
+                                            <h4 className="mb-1 mt-1"><span data-plugin="counterup"> {workers.length} </span></h4>
+                                            <p className="text-muted mb-0">Աշխատակիցներ</p>
                                         </div>
                                         <p className="text-muted mt-3 mb-0"><span className="text-danger mr-1"><i className="mdi mdi-arrow-down-bold ml-1"></i>0.82%</span> since last week
                                         </p>
@@ -88,23 +117,23 @@ const Home = () => {
                                 </div>
                             </div> 
                         </div> 
-                
+                }
                     <div className="row">
                             <div className="col-xl-8">
                                 <div className="card">
                                     <div className="card-body">
                                         <div className="float-right">
                                             <div className="dropdown">
-                                                <a className="dropdown-toggle text-reset" href="#" id="dropdownMenuButton5"
+                                                <Link className="dropdown-toggle text-reset" to="#" id="dropdownMenuButton5"
                                                     data-toggle="dropdown" aria-haspopup="true"
                                                     aria-expanded="false">
                                                     <span className="font-weight-semibold">Sort By:</span> <span className="text-muted">Yearly<i className="mdi mdi-chevron-down ml-1"></i></span>
-                                                </a>
+                                                </Link>
 
                                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton5">
-                                                    <a className="dropdown-item" href="#">Monthly</a>
-                                                    <a className="dropdown-item" href="#">Yearly</a>
-                                                    <a className="dropdown-item" href="#">Weekly</a>
+                                                    <Link className="dropdown-item" to="#">Monthly</Link>
+                                                    <Link className="dropdown-item" to="#">Yearly</Link>
+                                                    <Link className="dropdown-item" to="#">Weekly</Link>
                                                 </div>
                                             </div>
                                         </div>
@@ -139,7 +168,7 @@ const Home = () => {
                                             <div className="col-sm-8">
                                                 <p className="text-white font-size-18">Enhance your <b>Campaign</b> for better outreach <i className="mdi mdi-arrow-right"></i></p>
                                                 <div className="mt-4">
-                                                    <a href="" className="btn btn-success waves-effect waves-light">Upgrade Account!</a>
+                                                    <Link to="" className="btn btn-success waves-effect waves-light">Upgrade Account!</Link>
                                                 </div>
                                             </div>
                                             <div className="col-sm-4">
@@ -155,16 +184,16 @@ const Home = () => {
                                     <div className="card-body">
                                         <div className="float-right">
                                             <div className="dropdown">
-                                                <a className="dropdown-toggle text-reset" href="#" id="dropdownMenuButton1"
+                                                <Link className="dropdown-toggle text-reset" to="#" id="dropdownMenuButton1"
                                                     data-toggle="dropdown" aria-haspopup="true"
                                                     aria-expanded="false">
                                                     <span className="font-weight-semibold">Sort By:</span> <span className="text-muted">Yearly<i className="mdi mdi-chevron-down ml-1"></i></span>
-                                                </a>
+                                                </Link>
 
                                                 <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton1">
-                                                    <a className="dropdown-item" href="#">Monthly</a>
-                                                    <a className="dropdown-item" href="#">Yearly</a>
-                                                    <a className="dropdown-item" href="#">Weekly</a>
+                                                    <Link className="dropdown-item" to="#">Monthly</Link>
+                                                    <Link className="dropdown-item" to="#">Yearly</Link>
+                                                    <Link className="dropdown-item" to="#">Weekly</Link>
                                                 </div>
                                             </div>
                                         </div>

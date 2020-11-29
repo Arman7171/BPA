@@ -8,23 +8,23 @@ const SideBar = () => {
         <div className="vertical-menu">
 
         <div className="navbar-brand-box">
-            <a href="index-2.html" className="logo logo-dark">
+            <Link to="index-2.html" className="logo logo-dark">
                 <span className="logo-sm">
-                    <img src="assets/images/logo-sm.png" alt="" height="22" />
+                    <img src="/assets/images/logo-sm.png" alt="" height="22" />
                 </span>
                 <span className="logo-lg">
-                    <img src="assets/images/logo-dark.png" alt="" height="20" />
+                    <img src="/assets/images/logo-dark.png" alt="" height="20" />
                 </span>
-            </a>
+            </Link>
 
-            <a href="index-2.html" className="logo logo-light">
+            <Link to="index-2.html" className="logo logo-light">
                 <span className="logo-sm">
-                    <img src="assets/images/logo-sm.png" alt="" height="22" />
+                    <img src="/assets/images/logo-sm.png" alt="" height="22" />
                 </span>
                 <span className="logo-lg">
-                    <img src="assets/images/logo-light.png" alt="" height="20" />
+                    <img src="/assets/images/logo-light.png" alt="" height="20" />
                 </span>
-            </a>
+            </Link>
         </div>
 
         <button type="button" className="btn btn-sm px-3 font-size-16 header-item waves-effect vertical-menu-btn">

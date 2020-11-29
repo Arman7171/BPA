@@ -5,6 +5,7 @@ import AddBranchModal from './AddBranchModal';
 import { URL } from '../../../config/config';
 import axios from 'axios';
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const Branches = () => {
     const [showModal, setShowModal] = useState(false);
@@ -87,7 +88,7 @@ const Branches = () => {
                                 <h4 className="mb-0">Ձեր Ընկերության մասնաճուղերը</h4>
                                 <div className="page-title-right">
                                     <ol className="breadcrumb m-0">
-                                        <li className="breadcrumb-item"><a href="">Contacts</a></li>
+                                        <li className="breadcrumb-item"><Link to="">Contacts</Link></li>
                                         <li className="breadcrumb-item active">User List</li>
                                     </ol>
                                 </div>
@@ -149,11 +150,11 @@ const Branches = () => {
                                                                             onClick={() => handleCheck(branch.id)}
                                                                             id={branch.id}
                                                                         />
-                                                                        <label class="custom-control-label" htmlFor={branch.id}></label>
+                                                                        <label className="custom-control-label" htmlFor={branch.id}></label>
                                                                     </div>
                                                                 </th>
                                                                 <td>
-                                                                    <a href="#" className="text-body"> {branch.branchName} </a>
+                                                                    <Link to="#" className="text-body"> {branch.branchName} </Link>
                                                                 </td>
                                                                 <td> {branch.addres} </td>
                                                                 <td> {branch.vat} </td>
@@ -194,7 +195,7 @@ const Branches = () => {
                             </div>
                         <div className="col-sm-6">
                             <div className="text-sm-right d-none d-sm-block">
-                                Crafted with <i className="mdi mdi-heart text-danger"></i> by <a href="https://themesbrand.com/" target="_blank" className="text-reset">Themesbrand</a>
+                                Crafted with <i className="mdi mdi-heart text-danger"></i> by <Link to="https://themesbrand.com/" target="_blank" className="text-reset">Themesbrand</Link>
                             </div>
                         </div>
                     </div>
