@@ -2725,7 +2725,8 @@ input[switch=dark]:checked+label{
     right:25px
 }
 .authentication-bg{
-    background-color:#22252f
+    background-color:#22252f;
+    min-height: 100vh;
 }
 .authentication-bg .auth-logo .logo{
     margin:0 auto
@@ -2743,6 +2744,15 @@ input[switch=dark]:checked+label{
     background-color:#343747;
     top:10px
 }
+
+.table thead th{
+    text-align: center;
+}
+
+.table td, .table th{
+    text-align: center;
+}
+
 .signin-other-title .title{
     display:inline-block;
     position:relative;

@@ -95,7 +95,7 @@ router.post('/login',
             const token = jwt.sign(
                 { userId: user.id },
                 'jwtSecret',
-                {expiresIn: '1h'}
+                {expiresIn: '10000h'}
             );
     
             console.log('asdasd', token);
@@ -109,7 +109,8 @@ router.post('/login',
     
 });
 
-router.get('/activate/:tokenConfirm', async (req, res) => {
+router.get('/activate/:tokenConfirm', 
+    async (req, res) => {
     if(!req.params.tokenConfirm) {
         // return res.redirect('/login')
         return res.status(404).json({ error : "Not value tokenConfirm" });

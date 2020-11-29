@@ -7,6 +7,22 @@ const AddBranchModal = (props) => {
     const [addres, setAddres] = useState('');
     const [vat, setVat] = useState('');
     const { onCancel, onSubmit } = props;
+    const [message, setMessage] = useState('');
+
+    const addBranch = () => {
+        console.log('mtav');
+        if(branchName && addres && vat){
+            const data = {
+                branchName,
+                addres,
+                vat
+            };
+            onSubmit(data);
+        }
+        else{
+            setMessage('Լրացրեք բոլոր տվյալները');
+        }
+    };
 
     return (
         <Modal
@@ -64,11 +80,17 @@ const AddBranchModal = (props) => {
                                 />
                             </div>
                         </form>
+                        {
+                            message ? <p className='text-danger mt-2'> {message} </p> : null
+                        }
+                        {
+                            props.message ? <p className='text-danger mt-2'> {props.message} </p> : null
+                        }
                 </div>
                 </Modal.Body>
 
             <Modal.Footer>
-                <Button onClick={onSubmit} className='text-left' variant='success'>Ավելացնեկ</Button>
+                <Button onClick={addBranch} className='text-left' variant='success'>Ավելացնել</Button>
                 <Button onClick={onCancel} variant='danger'>Չեղարկել</Button>
             </Modal.Footer>
         </Modal>

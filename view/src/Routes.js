@@ -6,6 +6,7 @@ import Register from './Components/Autentication/Register';
 import Dashboard from './Components/Pages/Dashboard';
 import Activate from './Components/Autentication/Activate';
 import Branches from './Components/Pages/Branches/Branches';
+import Workers from './Components/Pages/Workers/Workers';
 
 export const Routes = (login, isAuthenticated) => {
 
@@ -14,9 +15,9 @@ export const Routes = (login, isAuthenticated) => {
             <Switch>
                 <Route path='/' exact component={Dashboard} />
                 <Route path='/not-found' component={NotFound} />
-                <Route path='/registration' component={Register} />
                 <Route path='/dashboard' component={Dashboard} />
                 <Route path='/branches' component={Branches} />
+                <Route path='/workers' component={Workers} />
                 <Redirect to='/not-found' />
             </Switch>
         );

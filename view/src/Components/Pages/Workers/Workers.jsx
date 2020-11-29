@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState, useEffect } from 'react';
 import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
-import AddBranchModal from './AddBranchModal';
-import { URL } from '../../../config/config';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import AddWorkerModal from './AddWorkerModal';
 import axios from 'axios';
-import { useEffect } from 'react';
+import { URL } from '../../../config/config';
 
-const Branches = () => {
+const Workers = () => {
     const [showModal, setShowModal] = useState(false);
-    const [branches, setBranches] = useState([]);
     const [errMessage, setErrMessage] = useState('');
-    const [checkedBranches, setCheckedBranches] = useState(new Set());
+    const [workers, setWorkers] = useState([]);
 
     var token = localStorage.getItem('token');
     const config = {
@@ -20,10 +18,10 @@ const Branches = () => {
     };
 
     useEffect(() => {
-        axios.get(`${URL}/branch/my-branches`, config)
+        axios.get(`${URL}/worker/my-workers`, config)
             .then((res) => {
-                console.log('my branches', res);
-                setBranches(res.data);
+                console.log('my workers', res);
+                setWorkers(res.data);
             })
             .catch(err => console.log(err.response))
     }, []);
@@ -33,49 +31,23 @@ const Branches = () => {
         setErrMessage('');
     };
 
-    const addBranch = (data) => {
+    const removeChecked = () => {
+
+    };
+
+    const addWorker = (data) => {
         console.log('add', data);
-        axios.post(`${URL}/branch/add`, data, config)
-            .then((res) => { 
-                console.log('branch', res);
-                setBranches([ res.data, ...branches]);
-                setShowModal(false); 
+        axios.post(`${URL}/worker/add`, data, config)
+            .then((res) => {
+                console.log('worker', res);
+                setWorkers([res.data, ...workers]);
+                setShowModal(false);
             })
             .catch(err => {
                 console.log('branch', err.response.data.error);
                 setErrMessage(err.response.data.error);
             });
     };
-
-    const handleCheck = (id) => {
-        var checkedb = new Set(checkedBranches);
-        if (checkedb.has(id)) {
-            checkedb.delete(id);
-        } else checkedb.add(id);
-        setCheckedBranches(checkedb);
-    };
-
-    const removeChecked = () => {
-        console.log([...checkedBranches]);
-        var data = [...checkedBranches];
-        const checkedb = new Set(checkedBranches);
-        var otherBranches = [...branches];
-        axios.patch(`${URL}/branch/delete`,data, config)
-            .then((res) => { 
-                console.log('branch', res);
-                checkedb.forEach(id => {
-                    console.log('id', id);
-                    otherBranches = otherBranches.filter((branch) => branch.id !== id);
-                });
-                checkedb.clear();
-                setCheckedBranches(checkedb);
-                setBranches(otherBranches);
-            })
-            .catch(err => {
-                console.log('branch', err.response.data.error);
-            });
-    };
-
 
     return (
         <div className="main-content">
@@ -84,7 +56,7 @@ const Branches = () => {
                     <div className="row">
                         <div className="col-12">
                             <div className="page-title-box d-flex align-items-center justify-content-between">
-                                <h4 className="mb-0">Ձեր Ընկերության մասնաճուղերը</h4>
+                                <h4 className="mb-0">Աշխատակիղներ</h4>
                                 <div className="page-title-right">
                                     <ol className="breadcrumb m-0">
                                         <li className="breadcrumb-item"><a href="">Contacts</a></li>
@@ -105,8 +77,8 @@ const Branches = () => {
                                                     className="btn btn-success waves-effect waves-light"
                                                     onClick={() => toggleConfirm()}
                                                 >
-                                                    <FontAwesomeIcon icon={faPlus} /> Ավելացնել մասնաճուղ
-                                                    </button>
+                                                    <FontAwesomeIcon icon={faPlus} /> Ավելացնել աշխատակցի
+                                                </button>
                                             </div>
                                         </div>
                                         <div className="col-md-6">
@@ -130,38 +102,39 @@ const Branches = () => {
                                                     <th scope="col">
                                                         <input type="checkbox" className="custom-control-input" />
                                                     </th>
-                                                    <th scope="col">Անվանումը</th>
-                                                    <th scope="col">Հասցե</th>
-                                                    <th scope="col">ՀՎՀՀ</th>
-                                                    <th scope="col">Ստեղծման ամսեթիվ</th>
+                                                    <th scope="col">Անուն</th>
+                                                    <th scope="col">Մասնաճյուղ</th>
+                                                    <th scope="col">Աշխատավարձ</th>
+                                                    <th scope="col">Դրույք</th>
+                                                    <th scope="col">Գրանցման օր</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {
-                                                    branches.map((branch, index) => {
-                                                        return (
-                                                            <tr key={branch.id}>
-                                                                <th scope="row">
-                                                                    <div className="custom-control custom-checkbox">
-                                                                        <input 
-                                                                            type="checkbox" 
-                                                                            className="custom-control-input"
-                                                                            onClick={() => handleCheck(branch.id)}
-                                                                            id={branch.id}
-                                                                        />
-                                                                        <label class="custom-control-label" htmlFor={branch.id}></label>
-                                                                    </div>
-                                                                </th>
-                                                                <td>
-                                                                    <a href="#" className="text-body"> {branch.branchName} </a>
-                                                                </td>
-                                                                <td> {branch.addres} </td>
-                                                                <td> {branch.vat} </td>
-                                                                <td> {new Date(branch.createdAt).toLocaleString()} </td>
-                                                            </tr>
-                                                        );
-                                                    })
-                                                }
+                                                workers.map((worker,) => {
+                                                    return (
+                                                        <tr key={worker.id}>
+                                                            <th scope="row">
+                                                                <div className="custom-control custom-checkbox">
+                                                                    <input 
+                                                                        type="checkbox" 
+                                                                        className="custom-control-input"
+                                                                        id={worker.id}
+                                                                    />
+                                                                    <label className="custom-control-label" htmlFor={worker.id}></label>
+                                                                </div>
+                                                            </th>
+                                                            <td>
+                                                                <a href="#" className="text-body"> {worker.fullName} </a>
+                                                            </td>
+                                                            <td> {worker.branchId} </td>
+                                                            <td> {worker.salary} </td>
+                                                            <td> {worker.rate} </td>
+                                                            <td> {new Date(worker.createdAt).toLocaleString()} </td>
+                                                        </tr>
+                                                    );
+                                                })
+                                            }
                                             </tbody>
                                         </table>
                                     </div>
@@ -170,10 +143,9 @@ const Branches = () => {
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="float-sm-right">
-                                                <button 
+                                                <button
                                                     className='btn btn-danger'
                                                     onClick={removeChecked}
-                                                    disabled={checkedBranches.size ? false : true}
                                                 >Ջնջել ընտրվածները</button>
                                             </div>
                                         </div>
@@ -191,7 +163,7 @@ const Branches = () => {
                     <div className="row">
                         <div className="col-sm-6">
                             © BPA.
-                            </div>
+                        </div>
                         <div className="col-sm-6">
                             <div className="text-sm-right d-none d-sm-block">
                                 Crafted with <i className="mdi mdi-heart text-danger"></i> by <a href="https://themesbrand.com/" target="_blank" className="text-reset">Themesbrand</a>
@@ -201,14 +173,14 @@ const Branches = () => {
                 </div>
             </footer>
             {showModal &&
-                <AddBranchModal
-                    onSubmit={addBranch}
+                <AddWorkerModal
+                    onSubmit={addWorker}
                     onCancel={toggleConfirm}
                     message={errMessage}
                 />
             }
         </div>
     );
-}
+};
 
-export default Branches;
+export default Workers;
