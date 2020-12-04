@@ -27,20 +27,28 @@ const Workers = sequelize.define("workers", {
         allowNull: false
     },
     rate: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
         allowNull: false
     },
     salary: {
         type: Sequelize.INTEGER,
         allowNull: false
     },
-    email: {
+    mobile: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    branchAddres: {
         type: Sequelize.STRING,
         allowNull: false
     },
+    email: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     password: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
   });
 

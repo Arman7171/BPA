@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import AddWorkerModal from './AddWorkerModal';
-import DeleteWorkerModal from './DeleteWorkerModal';
-import axios from 'axios';
+import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { URL } from '../../../config/config';
+import axios from 'axios';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import AddProviderModal from './AddProviderModal';
+import DeleteProviderModal from './DeleteProviderModal';
 
-const Workers = () => {
+const Providers = () => {
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [errMessage, setErrMessage] = useState('');
-    const [workers, setWorkers] = useState([]);
-    const [fullName, setFullName] = useState('');
+    const [providers, setProviders] = useState([]);
+    const [name, setName] = useState('');
     const [id, setId] = useState('');
 
     var token = localStorage.getItem('token');
@@ -23,10 +24,10 @@ const Workers = () => {
     };
 
     useEffect(() => {
-        axios.get(`${URL}/worker/my-workers`, config)
+        axios.get(`${URL}/provider/my-providers`, config)
             .then((res) => {
-                console.log('my workers', res);
-                setWorkers(res.data);
+                console.log('my branches', res);
+                setProviders(res.data);
             })
             .catch(err => console.log(err.response))
     }, []);
@@ -36,38 +37,39 @@ const Workers = () => {
         setErrMessage('');
     };
 
-    const showdeleteModal = (id, fullName) => {
+    const addProvider = (data) => {
+        console.log('add', data);
+        axios.post(`${URL}/provider/add`, data, config)
+            .then((res) => { 
+                console.log('provider', res);
+                setProviders([ res.data, ...providers]);
+                setShowModal(false); 
+            })
+            .catch(err => {
+                console.log('provider', err.response.data.error);
+                setErrMessage(err.response.data.error);
+            });
+    };
+
+    const showdeleteModal = (id, name) => {
         setId(id);
-        setFullName(fullName);
+        setName(name);
         setShowDeleteModal(!showDeleteModal);
     }
 
-    const removeWorker = (id) => {
-        axios.delete(`${URL}/worker/delete/${id}`, config)
+    const removeProvider = (id) => {
+        axios.delete(`${URL}/provider/delete/${id}`, config)
         .then((res) => {
-            console.log('my workers', res);
-            const otherWorkers = [...workers]
-            var index = workers.findIndex((worker) => worker.id === id);
-            otherWorkers.splice(index, 1);
-            setWorkers(otherWorkers);
+            console.log('my provider', res);
+            const otherProviders = [...providers]
+            var index = providers.findIndex((provider) => provider.id === id);
+            otherProviders.splice(index, 1);
+            setProviders(otherProviders);
             setShowDeleteModal(false);
         })
         .catch(err => console.log(err.response))
     };
 
-    const addWorker = (data) => {
-        console.log('add', data);
-        axios.post(`${URL}/worker/add`, data, config)
-            .then((res) => {
-                console.log('worker', res);
-                setWorkers([res.data, ...workers]);
-                setShowModal(false);
-            })
-            .catch(err => {
-                console.log('branch', err.response.data.error);
-                setErrMessage(err.response.data.error);
-            });
-    };
 
     return (
         <div className="main-content">
@@ -76,7 +78,7 @@ const Workers = () => {
                     <div className="row">
                         <div className="col-12">
                             <div className="page-title-box d-flex align-items-center justify-content-between">
-                                <h4 className="mb-0">Աշխատակիցներ</h4>
+                                <h4 className="mb-0">Մատակարարները</h4>
                                 <div className="page-title-right">
                                     <ol className="breadcrumb m-0">
                                         <li className="breadcrumb-item"><Link to="">Contacts</Link></li>
@@ -97,8 +99,8 @@ const Workers = () => {
                                                     className="btn btn-success waves-effect waves-light"
                                                     onClick={() => toggleConfirm()}
                                                 >
-                                                    <FontAwesomeIcon icon={faPlus} /> Ավելացնել աշխատակցի
-                                                </button>
+                                                    <FontAwesomeIcon icon={faPlus} /> Ավելացնել մատակարարի
+                                                    </button>
                                             </div>
                                         </div>
                                         <div className="col-md-6">
@@ -122,40 +124,38 @@ const Workers = () => {
                                                     <th scope="col">
                                                         <input type="checkbox" className="custom-control-input" />
                                                     </th>
-                                                    <th scope="col">Անուն</th>
-                                                    <th scope="col">Մասնաճյուղ</th>
-                                                    <th scope="col">Աշխատավարձ</th>
-                                                    <th scope="col">Դրույք</th>
-                                                    <th scope="col">Գրանցման օր</th>
+                                                    <th scope="col">Անվանումը</th>
+                                                    <th scope="col">Հասցե</th>
+                                                    <th scope="col">ՀՎՀՀ</th>
+                                                    <th scope="col">Ստեղծման ամսեթիվ</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {
-                                                workers.map((worker,) => {
-                                                    return (
-                                                        <tr key={worker.id}>
-                                                            <th scope="row">
+                                                    providers.map((provider, index) => {
+                                                        return (
+                                                            <tr key={provider.id}>
+                                                                <th scope="row">
                                                                 <div className="custom-control custom-checkbox">
                                                                     <h6 
                                                                         className='text-danger'
                                                                         style={{cursor: 'pointer'}} 
-                                                                        onClick={() => showdeleteModal(worker.id, worker.fullName)}
+                                                                        onClick={() => showdeleteModal(provider.id, provider.providerName)}
                                                                     >
                                                                         Հեռացնել
                                                                     </h6>
                                                                 </div>
-                                                            </th>
-                                                            <td>
-                                                                <Link to={`/profile/${worker.id}`} className="text-body"> {worker.fullName} </Link>
-                                                            </td>
-                                                            <td> {worker.branchAddres} </td>
-                                                            <td> {worker.salary} </td>
-                                                            <td> {worker.rate} </td>
-                                                            <td> {new Date(worker.createdAt).toLocaleString()} </td>
-                                                        </tr>
-                                                    );
-                                                })
-                                            }
+                                                                </th>
+                                                                <td>
+                                                                    <Link to="#" className="text-body"> {provider.providerName} </Link>
+                                                                </td>
+                                                                <td> {provider.addres} </td>
+                                                                <td> {provider.vat} </td>
+                                                                <td> {new Date(provider.createdAt).toLocaleString()} </td>
+                                                            </tr>
+                                                        );
+                                                    })
+                                                }
                                             </tbody>
                                         </table>
                                     </div>
@@ -164,9 +164,10 @@ const Workers = () => {
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="float-sm-right">
-                                                <button
+                                                <button 
                                                     className='btn btn-danger'
                                                     onClick={removeChecked}
+                                                    disabled={checkedBranches.size ? false : true}
                                                 >Ջնջել ընտրվածները</button>
                                             </div>
                                         </div>
@@ -184,7 +185,7 @@ const Workers = () => {
                     <div className="row">
                         <div className="col-sm-6">
                             © BPA.
-                        </div>
+                            </div>
                         <div className="col-sm-6">
                             <div className="text-sm-right d-none d-sm-block">
                                 Crafted with <i className="mdi mdi-heart text-danger"></i> by <Link to="https://themesbrand.com/" target="_blank" className="text-reset">Themesbrand</Link>
@@ -194,23 +195,23 @@ const Workers = () => {
                 </div>
             </footer>
             {showModal &&
-                <AddWorkerModal
-                    onSubmit={addWorker}
+                <AddProviderModal
+                    onSubmit={addProvider}
                     onCancel={toggleConfirm}
                     message={errMessage}
                 />
             }
             {
                 showDeleteModal &&
-                <DeleteWorkerModal
-                    onSubmit={removeWorker}
+                <DeleteProviderModal
+                    onSubmit={removeProvider}
                     onCancel={showdeleteModal}
                     id={id}
-                    fullName={fullName}
+                    name={name}
                 />
             }
         </div>
     );
-};
+}
 
-export default Workers;
+export default Providers;

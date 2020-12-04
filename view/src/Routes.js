@@ -8,6 +8,8 @@ import Activate from './Components/Autentication/Activate';
 import Branches from './Components/Pages/Branches/Branches';
 import Workers from './Components/Pages/Workers/Workers';
 import Profile from './Components/Pages/Profile';
+import Providers from './Components/Pages/Providers/Providers';
+import ProductImports from './Components/Pages/ProductImports'; 
 
 export const Routes = (login, isAuthenticated) => {
 
@@ -20,6 +22,8 @@ export const Routes = (login, isAuthenticated) => {
                 <Route path='/branches' component={Branches} />
                 <Route path='/workers' component={Workers} />
                 <Route path='/profile/:id' component={Profile} />
+                <Route path='/providers' component={Providers} />
+                <Route path='/productImports' component={ProductImports} />
                 <Redirect to='/not-found' />
             </Switch>
         );

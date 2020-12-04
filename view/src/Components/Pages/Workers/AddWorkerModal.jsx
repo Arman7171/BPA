@@ -13,6 +13,7 @@ const AddWorkerModal = (props) => {
     const [salary, setSalary] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [mobile, setMobile] = useState('');
     const [confPassword, setConfPassword] = useState('');
     const { onCancel, onSubmit } = props;
     const [message, setMessage] = useState('');
@@ -35,24 +36,41 @@ const AddWorkerModal = (props) => {
     }, []);
 
     const addWorker = () => {       
-        if(fullName && birthDay && ssn && icn && rate && salary && email && password && branchId){
-            if(password === confPassword){
-                const data = {
-                    fullName,
-                    birthDay,
-                    ssn,
-                    icn,
-                    rate,
-                    salary,
-                    email,
-                    password,
-                    branchId
-                };
-                onSubmit(data);
+        if(fullName && birthDay && ssn && icn && rate && salary && branchId){
+            if(email){
+                if(password === confPassword){
+                    const data = {
+                        fullName,
+                        birthDay,
+                        ssn,
+                        icn,
+                        rate,
+                        salary,
+                        mobile,
+                        email,
+                        password,
+                        branchId
+                    };
+                    onSubmit(data);
+                }
+                else{
+                    setMessage('Գաղթնաբառի սխալ կրկնություն');
+                }
             }
-            else{
-                setMessage('Գաղթնաբառի սխալ կրկնություն');
-            }
+           else{
+            const data = {
+                fullName,
+                birthDay,
+                ssn,
+                icn,
+                rate,
+                mobile,
+                salary,
+                email: '',
+                branchId
+            };
+            onSubmit(data);
+           }
         }
         else{
             setMessage('Լրացրեք բոլոր տվյալները');
@@ -125,6 +143,18 @@ const AddWorkerModal = (props) => {
                             </div>
 
                             <div className="form-group">
+                                <label htmlFor="mobile">Հեռախոսահամր</label>
+                                <input
+                                    type="tel"
+                                    className="form-control"
+                                    id="mobile"
+                                    value={mobile}
+                                    onChange={(e) => setMobile(e.target.value)}
+                                    required={true}
+                                />
+                            </div>
+
+                            <div className="form-group">
                                 <label htmlFor="branch">Մասնաճյուղը</label>
                                 <select id="branch" className="form-control" onChange={(e) => setBranchId(e.target.value)}>
                                     <option>---</option>
@@ -144,7 +174,7 @@ const AddWorkerModal = (props) => {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="salary">Աշխատավրձի չափ</label>
+                                <label htmlFor="salary">Աշխատավարձի չափ</label>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -157,19 +187,21 @@ const AddWorkerModal = (props) => {
 
                             <div className="form-group">
                                 <label htmlFor="rate">Դրույք</label>
-                                <input
-                                    type="number"
+                                <select 
+                                    name="" 
+                                    id="" 
                                     className="form-control"
-                                    id="rate"
-                                    placeholder="ՀՎՀՀ"
-                                    value={rate}
                                     onChange={(e) => setRate(e.target.value)}
-                                    required={true}
-                                />
+                                >
+                                    <option value="">---</option>
+                                    <option value="0.5">0.5</option>
+                                    <option value="0.75">0.75</option>
+                                    <option value="1">1</option>
+                                </select>
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="email">Մուտքի էլէտրոնաին հասցե</label>
+                                <label htmlFor="email">Մուտքի էլէկտրոնային հասցե</label>
                                 <input
                                     type="email"
                                     className="form-control"
@@ -181,7 +213,7 @@ const AddWorkerModal = (props) => {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="password">Գաղթնաբառ</label>
+                                <label htmlFor="password">Գաղտնաբառ</label>
                                 <input
                                     type="password"
                                     className="form-control"
@@ -193,7 +225,7 @@ const AddWorkerModal = (props) => {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="confPassword">Կրկնել Գաղթնաբառը</label>
+                                <label htmlFor="confPassword">Կրկնել Գաղտնաբառը</label>
                                 <input
                                     type="password"
                                     className="form-control"

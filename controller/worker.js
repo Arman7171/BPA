@@ -3,6 +3,7 @@ const router = Router();
 const jwt = require('jsonwebtoken');
 const workerMiddleware = require('../middleware/worker');
 const Workers = require('../model/worker');
+const Branches = require('../model/branch');
 const bcrypt = require('bcryptjs');
 
 router.post('/add', 
@@ -10,9 +11,17 @@ router.post('/add',
     async (req, res) => {
     try{
         console.log('mtav');
+        var hashedPassword;
         const token = req.headers['authorization'].replace('Bearer ','');
-        const {fullName, birthDay, ssn, icn, rate, salary, email, password, branchId} = req.body;
-        const hashedPassword = await bcrypt.hash(password, 12);
+        const {fullName, birthDay, ssn, icn, rate, salary, mobile, email, password, branchId} = req.body;
+        const branch = await Branches.findOne({where: {id: branchId}});
+        console.log('branch', branch);
+        if(password){
+            hashedPassword = await bcrypt.hash(password, 12);
+        }
+        else{
+            hashedPassword = '';
+        }
 
         info = jwt.verify(token, 'jwtSecret');
         Workers.create({
@@ -21,8 +30,10 @@ router.post('/add',
             ssn, 
             icn, 
             rate, 
-            salary, 
-            email, 
+            salary,
+            mobile,
+            branchAddres: branch.addres, 
+            email: email ? email : '', 
             password: hashedPassword,
             userId: info.userId,
             branchId

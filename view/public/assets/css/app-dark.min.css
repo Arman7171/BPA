@@ -2776,7 +2776,9 @@ input[switch=dark]:checked+label{
     color: yellowgreen!important;
 }
 
-
+.page-title-box h4{
+    color: white;
+}
 
 .signin-other-title .title{
     display:inline-block;

@@ -78,15 +78,17 @@ const Profile = () => {
                                         </div>
                                         <div className="mt-4">
                                             <p className="mb-1">Հեռախոսահամար</p>
-                                            <h5 className="font-size-16">012-234-5678</h5>
+                                            <h5 className="font-size-16"> {UserInfo.mobile} </h5>
                                         </div>
                                         <div className="mt-4">
                                             <p className="mb-1">Էլէտրոնաին հասցե</p>
-                                            <h5 className="font-size-16"> {UserInfo.email} </h5>
+                                            <h5 className="font-size-16"> 
+                                                {UserInfo.email ? UserInfo.email : 'Նշված չէ'} 
+                                            </h5>
                                         </div>
                                         <div className="mt-4">
                                             <p className="mb-1">Մասնաճյուղի հասցե</p>
-                                            <h5 className="font-size-16"> {UserInfo.branchId} </h5>
+                                            <h5 className="font-size-16"> {UserInfo.branchAddres} </h5>
                                         </div>
                                         <div className="mt-4">
                                             <p className="mb-1">Աշխատավարձի չափ</p>

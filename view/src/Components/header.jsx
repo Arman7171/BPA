@@ -29,12 +29,6 @@ const Header = () => {
                 <button type="button" className="btn btn-sm px-3 font-size-16 header-item waves-effect vertical-menu-btn">
                     <i className="fa fa-fw fa-bars"></i>
                 </button>
-                <form className="app-search d-none d-lg-block">
-                    <div className="position-relative">
-                    <button className='btn btn-light'><Link to='/branches'>Ավելացնել մասնաճուղ</Link></button>
-
-                    </div>
-                </form>
             </div>
 
             <div className="d-flex">

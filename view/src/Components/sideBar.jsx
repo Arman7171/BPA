@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faCodeBranch, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faCodeBranch, faUsers, faFileImport, faFileExport } from '@fortawesome/free-solid-svg-icons';
 
 const SideBar = () => {
     return(
@@ -55,7 +55,24 @@ const SideBar = () => {
                             <span>Աշխատակիցներ</span>
                         </Link>
                     </li>
-
+                    <li>
+                        <Link to='/providers'>
+                            <FontAwesomeIcon className='mr-2' icon={faUsers} />
+                            <span>Մատակարարներ</span>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to='/productImports'>
+                            <FontAwesomeIcon className='mr-2' icon={faFileImport} />
+                            <span>Ապրանքի մուտք</span>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to='/providers'>
+                            <FontAwesomeIcon className='mr-2' icon={faFileExport} />
+                            <span>Ապրանքի ելք</span>
+                        </Link>
+                    </li>
                 </ul>
             </div>
         </div>
