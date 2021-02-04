@@ -4,7 +4,10 @@ import { Routes } from './Routes';
 import { BrowserRouter as Route } from 'react-router-dom';
 import SideBar from './Components/sideBar';
 import Header from './Components/header';
-function App() {
+import Spinner from './Components/Spinner/Spinner';
+import { connect } from 'react-redux';
+
+function App(props) {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
 
   useEffect(() => {
@@ -16,7 +19,7 @@ function App() {
     setIsAuthenticated(!!localStorage.getItem('token'));
   }
   
- 
+  const { loading } = props;
   return (
     <div className="App">
       <Route>
@@ -29,11 +32,18 @@ function App() {
              null
         }
         {Routes(login, isAuthenticated)}
+        {
+          loading ? <Spinner /> : null
+        }
       </Route>
     </div>
   );
 }
 
+const mapStateToProps = (state) => {
+  return{
+    loading: state.activityReducer.loading
+  }
+};
 
-
-export default App;
+export default connect(mapStateToProps, null)(App);

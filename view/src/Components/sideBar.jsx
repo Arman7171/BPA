@@ -26,10 +26,10 @@ const SideBar = () => {
                 </span>
             </Link>
         </div>
-
+{/* 
         <button type="button" className="btn btn-sm px-3 font-size-16 header-item waves-effect vertical-menu-btn">
             <i className="fa fa-fw fa-bars"></i>
-        </button>
+        </button> */}
 
         <div data-simplebar className="sidebar-menu-scroll">
 
@@ -40,37 +40,37 @@ const SideBar = () => {
                     <li>
                         <Link to='/dashboard'>
                             <FontAwesomeIcon className='mr-2' icon={faHome} />
-                            <span>Աշխատասենյակ</span>
+                            <span className='sidebar-items'>Աշխատասենյակ</span>
                         </Link>
                     </li>
                     <li>
                         <Link to='/branches'>
-                            <FontAwesomeIcon className='mr-3' icon={faCodeBranch} />
-                            <span>Մասնաճյուղեր</span>
+                            <FontAwesomeIcon className='ml-2' icon={faCodeBranch} />
+                            <span className='sidebar-items'>Մասնաճյուղեր</span>
                         </Link>
                     </li>
                     <li>
                         <Link to='/workers'>
                             <FontAwesomeIcon className='mr-2' icon={faUsers} />
-                            <span>Աշխատակիցներ</span>
+                            <span className='sidebar-items'>Աշխատակիցներ</span>
                         </Link>
                     </li>
                     <li>
                         <Link to='/providers'>
                             <FontAwesomeIcon className='mr-2' icon={faUsers} />
-                            <span>Մատակարարներ</span>
+                            <span className='sidebar-items'>Մատակարարներ</span>
                         </Link>
                     </li>
                     <li>
                         <Link to='/productImports'>
                             <FontAwesomeIcon className='mr-2' icon={faFileImport} />
-                            <span>Ապրանքի մուտք</span>
+                            <span className='sidebar-items'>Մուտքեր</span>
                         </Link>
                     </li>
                     <li>
                         <Link to='/providers'>
                             <FontAwesomeIcon className='mr-2' icon={faFileExport} />
-                            <span>Ապրանքի ելք</span>
+                            <span className='sidebar-items'>Ելքեր</span>
                         </Link>
                     </li>
                 </ul>

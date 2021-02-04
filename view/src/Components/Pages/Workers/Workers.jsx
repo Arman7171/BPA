@@ -3,37 +3,28 @@ import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AddWorkerModal from './AddWorkerModal';
 import DeleteWorkerModal from './DeleteWorkerModal';
-import axios from 'axios';
-import { URL } from '../../../config/config';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { getWorkers, addWorker } from "../../../Store/Activity/activityActions";
 
-const Workers = () => {
+const Workers = ({getWorkers, addWorker, workers, errorMessage, addWorkerSuccess}) => {
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [errMessage, setErrMessage] = useState('');
-    const [workers, setWorkers] = useState([]);
     const [fullName, setFullName] = useState('');
     const [id, setId] = useState('');
 
-    var token = localStorage.getItem('token');
-    const config = {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        }
-    };
+    useEffect(() => {
+        getWorkers();
+    }, []);
 
     useEffect(() => {
-        axios.get(`${URL}/worker/my-workers`, config)
-            .then((res) => {
-                console.log('my workers', res);
-                setWorkers(res.data);
-            })
-            .catch(err => console.log(err.response))
-    }, []);
+        if(!addWorkerSuccess){
+            setShowModal(false);
+        }
+    }, [addWorkerSuccess]);
 
     const toggleConfirm = () => {
         setShowModal(!showModal);
-        setErrMessage('');
     };
 
     const showdeleteModal = (id, fullName) => {
@@ -43,30 +34,16 @@ const Workers = () => {
     }
 
     const removeWorker = (id) => {
-        axios.delete(`${URL}/worker/delete/${id}`, config)
-        .then((res) => {
-            console.log('my workers', res);
-            const otherWorkers = [...workers]
-            var index = workers.findIndex((worker) => worker.id === id);
-            otherWorkers.splice(index, 1);
-            setWorkers(otherWorkers);
-            setShowDeleteModal(false);
-        })
-        .catch(err => console.log(err.response))
-    };
-
-    const addWorker = (data) => {
-        console.log('add', data);
-        axios.post(`${URL}/worker/add`, data, config)
-            .then((res) => {
-                console.log('worker', res);
-                setWorkers([res.data, ...workers]);
-                setShowModal(false);
-            })
-            .catch(err => {
-                console.log('branch', err.response.data.error);
-                setErrMessage(err.response.data.error);
-            });
+        // axios.delete(`${URL}/worker/delete/${id}`, config)
+        // .then((res) => {
+        //     console.log('my workers', res);
+        //     const otherWorkers = [...workers]
+        //     var index = workers.findIndex((worker) => worker.id === id);
+        //     otherWorkers.splice(index, 1);
+        //     setWorkers(otherWorkers);
+        //     setShowDeleteModal(false);
+        // })
+        // .catch(err => console.log(err.response))
     };
 
     return (
@@ -197,7 +174,7 @@ const Workers = () => {
                 <AddWorkerModal
                     onSubmit={addWorker}
                     onCancel={toggleConfirm}
-                    message={errMessage}
+                    message={errorMessage}
                 />
             }
             {
@@ -213,4 +190,17 @@ const Workers = () => {
     );
 };
 
-export default Workers;
+const mapStateToProps = (state) => {
+    return{
+        workers: state.activityReducer.workers,
+        addWorkerSuccess: state.activityReducer.addWorkerSuccess,
+        errorMessage: state.activityReducer.errorMessage
+    }
+};
+
+const mapDispatchToProps={
+    getWorkers,
+    addWorker
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Workers);

@@ -32,7 +32,9 @@ router.post('/add',
 
 router.get('/my-branches',
         async (req, res) => {
+            console.log('mtav------=========');
         try{
+            console.log(req.headers);
             const token = req.headers['authorization'].replace('Bearer ','');
             info = jwt.verify(token, 'jwtSecret');
             const userBranches = await Branches.findAll({where:{userId: info.userId}, raw: true });

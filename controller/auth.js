@@ -101,7 +101,7 @@ router.post('/login',
             else{
                  isMatch = await bcrypt.compare(password, worker.password);
                  if(!isMatch){
-                    return res.status(400).json({ message: 'Սխալ գղթնաբառ' })
+                    return res.status(400).json({ message: 'Սխալ գաղթնաբառ' })
                 }
                 else{
                     const token = jwt.sign(
@@ -119,7 +119,7 @@ router.post('/login',
         else{
              isMatch = await bcrypt.compare(password, user.password);
              if(!isMatch){
-                return res.status(400).json({ message: 'Սխալ գղթնաբառ' })
+                return res.status(400).json({ message: 'Սխալ գաղթնաբառ' })
             }
             else{
                 const token = jwt.sign(

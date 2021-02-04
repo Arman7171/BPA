@@ -2,50 +2,32 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
 import AddBranchModal from './AddBranchModal';
-import { URL } from '../../../config/config';
-import axios from 'axios';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { getBranches, addBranch, removeBranch } from '../../../Store/Activity/activityActions';
 
-const Branches = () => {
+const Branches = (props) => {
     const [showModal, setShowModal] = useState(false);
-    const [branches, setBranches] = useState([]);
-    const [errMessage, setErrMessage] = useState('');
     const [checkedBranches, setCheckedBranches] = useState(new Set());
-
-    var token = localStorage.getItem('token');
-    const config = {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        }
-    };
+    const { branches } = props;
 
     useEffect(() => {
-        axios.get(`${URL}/branch/my-branches`, config)
-            .then((res) => {
-                console.log('my branches', res);
-                setBranches(res.data);
-            })
-            .catch(err => console.log(err.response))
+        props.getBranches();
     }, []);
+
+    useEffect(() => {
+        if(!props.addBranchSuccess){
+            setShowModal(false);
+        }
+    }, [props.addBranchSuccess]);
 
     const toggleConfirm = () => {
         setShowModal(!showModal);
-        setErrMessage('');
     };
 
-    const addBranch = (data) => {
-        console.log('add', data);
-        axios.post(`${URL}/branch/add`, data, config)
-            .then((res) => { 
-                console.log('branch', res);
-                setBranches([ res.data, ...branches]);
-                setShowModal(false); 
-            })
-            .catch(err => {
-                console.log('branch', err.response.data.error);
-                setErrMessage(err.response.data.error);
-            });
+    const addBranchs = (data) => {
+        props.addBranch(data);
     };
 
     const handleCheck = (id) => {
@@ -59,22 +41,7 @@ const Branches = () => {
     const removeChecked = () => {
         console.log([...checkedBranches]);
         var data = [...checkedBranches];
-        const checkedb = new Set(checkedBranches);
-        var otherBranches = [...branches];
-        axios.patch(`${URL}/branch/delete`,data, config)
-            .then((res) => { 
-                console.log('branch', res);
-                checkedb.forEach(id => {
-                    console.log('id', id);
-                    otherBranches = otherBranches.filter((branch) => branch.id !== id);
-                });
-                checkedb.clear();
-                setCheckedBranches(checkedb);
-                setBranches(otherBranches);
-            })
-            .catch(err => {
-                console.log('branch', err.response.data.error);
-            });
+        props.removeBranch(data);
     };
 
 
@@ -203,13 +170,27 @@ const Branches = () => {
             </footer>
             {showModal &&
                 <AddBranchModal
-                    onSubmit={addBranch}
+                    onSubmit={addBranchs}
                     onCancel={toggleConfirm}
-                    message={errMessage}
+                    message={props.errorMessage}
                 />
             }
         </div>
     );
 }
 
-export default Branches;
+const mapStateToProps = (state) => {
+    return{
+        branches: state.activityReducer.branches,
+        addBranchSuccess: state.activityReducer.addBranchSuccess,
+        errorMessage: state.activityReducer.errorMessage
+    }
+}
+
+const mapDispatchToProps = {
+    getBranches,
+    addBranch,
+    removeBranch
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Branches);

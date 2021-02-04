@@ -1,20 +1,23 @@
 import React from 'react';
-import { URL } from '../../config/config';
+import { URL } from '../../../config/config';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import Inovice from '../Inovice';
+import SeeInovice from './SeeInovices';
 
 const ProductImports = () => {
+    const [type,] = useState(localStorage.getItem('type'));
+    const [myImportedProducts, setMyImportedProducts] = useState([]);
     const [providers, setProviders] = useState([]);
-    const [providerName, setProviderName] = useState('');
+    const [providerId, setProviderId] = useState('');
     const [providerAddres, setProviderAddres] = useState('');
     const [providerVat, setProviderVat] = useState('');
     const [branches, setBranches] = useState([]);
+    const [showInovice, setShowInovice] = useState(false);
     const [productData, setProductData] = useState([
         {
-            providerName: '', unit: '', count: '', price: '', discount: 0, total: 0,
+            productName: '', unit: 'հատ', count: '', price: '', discount: 0, total: 0, status: 'import',
             productPlacement: [
                 { branchId: '', productCount: '' }
             ]
@@ -43,6 +46,15 @@ const ProductImports = () => {
                 setBranches(res.data);
             })
             .catch(err => console.log(err.response))
+
+        if(type === 'manager'){
+            axios.get(`${URL}/product/mybranch-products`, config)
+            .then((res) => {
+                console.log('my-product', res)
+                setMyImportedProducts(res.data)
+            })
+            .catch(err => console.log('err', err.response))
+        }
     }, []);
 
     const addProduct = (value, id, type) => {
@@ -53,7 +65,7 @@ const ProductImports = () => {
 
     const getTotal = (id) => {
         const newData = [...productData];
-        newData[id].total = newData[id].count * newData[id].price - ((newData[id].count * newData[id].price)*newData[id].discount)/100;
+        newData[id].total = newData[id].count * newData[id].price - ((newData[id].count * newData[id].price) * newData[id].discount) / 100;
         setProductData(newData);
     };
 
@@ -74,18 +86,22 @@ const ProductImports = () => {
         }
     }
 
+    const inoviceToggle = () => {
+        setShowInovice(!showInovice);
+    };
+
     const addProductData = () => {
         const newData = [...productData];
         newData.push(
-                {
-                    providerName: '', unit: '', count: '', price: '', total: 0,
-                    productPlacement: [
-                        { branchId: '', productCount: '' }
-                    ]
-                }
-            )
+            {
+                productName: '', unit: 'հատ', count: '', price: '', discount: 0, total: 0,
+                productPlacement: [
+                    { branchId: '', productCount: '' }
+                ]
+            }
+        )
 
-            setProductData(newData);
+        setProductData(newData);
 
     };
 
@@ -93,9 +109,26 @@ const ProductImports = () => {
         console.log(id);
         const index = providers.findIndex((provider) => provider.id == id);
         console.log(index, providers[index]);
-        setProviderName(providers[index].providerName);
+        setProviderId(providers[index].id);
         setProviderAddres(providers[index].addres);
         setProviderVat(providers[index].vat);
+    };
+
+    const checkProduct = id => {
+        console.log(id);
+        axios.get(`${URL}/product/product-info/${id}`, config)
+        .then(res => {
+            console.log('info', res);
+        })
+    };
+
+    const SaveAddedProducts = () => {
+        axios.post(`${URL}/product/add-products`, { productData, providerId }, config)
+            .then((res) => {
+                console.log('add-product', res.data);
+                inoviceToggle();
+            })
+            .catch((err) => console.log('err', err.response))
     };
 
     return (
@@ -118,63 +151,96 @@ const ProductImports = () => {
 
                     <div className="card">
                         <div className="card-body">
-                            <h5 className='mb-4'>Մատակարարի տվյալները</h5>
-                            <div className="row">
-                                <div className="col-6">
-                                    <div className="form-group">
-                                        <label htmlFor="name">Մատակարարի անվանումը</label>
-                                        <select name="" id="name" className='form-control' onChange={(e) => checkProvider(e.target.value)}>
-                                            <option>---</option>
-                                            {
-                                                providers.map((provider) => {
-                                                    return (
-                                                        <option
-                                                            key={provider.id}
-                                                            value={provider.id}
-                                                        >
-                                                            {provider.providerName}
-                                                        </option>
-                                                    );
-                                                })
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="col-6">
-                                    <div className="form-group">
-                                        <label htmlFor="addres">Հասցե</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="addres"
-                                            value={providerAddres}
-                                            disabled={true}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-6">
-                                    <div className="form-group">
-                                        <label htmlFor="vat">ՀՎՀՀ</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="vat"
-                                            value={providerVat}
-                                            disabled={true}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+                            {
+                                type === 'manager' ?
+                                   null :
+                                    <>
+                                        <h5 className='mb-4'>Մատակարարի տվյալները</h5>
+                                        <div className="row">
+                                            <div className="col-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="name">Մատակարարի անվանումը</label>
+                                                    <select name="" id="name" className='form-control' onChange={(e) => checkProvider(e.target.value)}>
+                                                        <option>---</option>
+                                                        {
+                                                            providers.map((provider) => {
+                                                                return (
+                                                                    <option
+                                                                        key={provider.id}
+                                                                        value={provider.id}
+                                                                    >
+                                                                        {provider.providerName}
+                                                                    </option>
+                                                                );
+                                                            })
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className="col-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="addres">Հասցե</label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        id="addres"
+                                                        value={providerAddres}
+                                                        disabled={true}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="vat">ՀՎՀՀ</label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        id="vat"
+                                                        value={providerVat}
+                                                        disabled={true}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                            }
                             {
                                 productData.map((product, index) => {
                                     return (
-                                        <>
+                                        <div key={index}>
                                             <h5 className='my-4'>Ապրանքի տվյալները</h5>
                                             <div className="row">
+                                            {
+                                                type === 'manager' ?
+                                            <>
+                                            <div className="col-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="name">Մուտքագրված ապրանքների ցանկը</label>
+                                                    <select name="" id="name" className='form-control' onChange={(e) => checkProduct(e.target.value)}>
+                                                        <option>---</option>
+                                                        {
+                                                            myImportedProducts.map((product) => {
+                                                                return (
+                                                                    <option
+                                                                        key={product.id}
+                                                                        value={product.productId}
+                                                                    >
+                                                                        {product.id}
+                                                                    </option>
+                                                                );
+                                                            })
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className='col-6'></div>
+                                            </> : null
+                                        }
                                                 <div className="col-6">
                                                     <div className="form-group">
                                                         <label htmlFor="productName">Ապրանքի անվանումը</label>
                                                         <input
+                                                            disabled={type === 'manager' && true}
                                                             type="text"
                                                             className="form-control"
                                                             id="productName"
@@ -190,9 +256,10 @@ const ProductImports = () => {
                                                             id="item"
                                                             className='form-control'
                                                             onChange={(e) => addProduct(e.target.value, index, 'unit')}
+                                                            disabled={type === 'manager' && true}
                                                         >
-                                                            <option value='item'>Հատ</option>
-                                                            <option value='kg'>Կգ</option>
+                                                            <option value='հատ'>Հատ</option>
+                                                            <option value='կգ'>Կգ</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -200,7 +267,7 @@ const ProductImports = () => {
                                                     <div className="form-group">
                                                         <label htmlFor="count">Քանակ</label>
                                                         <input
-                                                            type="text"
+                                                            type="number"
                                                             className="form-control"
                                                             id="count"
                                                             value={product.count}
@@ -215,10 +282,11 @@ const ProductImports = () => {
                                                     <div className="form-group">
                                                         <label htmlFor="price">Միաոր գին</label>
                                                         <input
-                                                            type="text"
+                                                            type="number"
                                                             className="form-control"
                                                             id="price"
                                                             value={product.price}
+                                                            disabled={type === 'manager' && true}
                                                             onChange={(e) => {
                                                                 addProduct(e.target.value, index, 'price')
                                                                 getTotal(index)
@@ -230,10 +298,11 @@ const ProductImports = () => {
                                                     <div className="form-group">
                                                         <label htmlFor="discount">Զեղչ</label>
                                                         <input
-                                                            type="text"
+                                                            type="number"
                                                             className="form-control"
                                                             id="discount"
                                                             value={product.discount}
+                                                            disabled={type === 'manager' && true}
                                                             onChange={(e) => {
                                                                 addProduct(e.target.value, index, 'discount')
                                                                 getTotal(index)
@@ -254,7 +323,10 @@ const ProductImports = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <h5 className='my-4'>Ապրանքի տեղաբաշխում</h5>
+                                            {
+                                                type !== 'manager' ? 
+                                                <>
+                                                    <h5 className='my-4'>Ապրանքի տեղաբաշխում</h5>
                                             {
                                                 product.productPlacement.map((placement, productIndex) => {
                                                     return (
@@ -311,7 +383,12 @@ const ProductImports = () => {
                                                     Ավելացնել Մասնաճյուղ
                                                 </button>
                                             </div>
-                                        </>
+                                                </> : null
+                                            }
+                                            
+                                            <hr style={{ background: 'white' }} />
+
+                                        </div>
                                     )
                                 })
                             }
@@ -328,6 +405,13 @@ const ProductImports = () => {
                         </div>
                     </div>
                 </div>
+                <button
+                    className='btn btn-info ml-3'
+                    onClick={inoviceToggle}
+                >
+                    Տեսնել հաշիվ ապրանքագրը
+                </button>
+
             </div>
 
 
@@ -345,6 +429,15 @@ const ProductImports = () => {
                     </div>
                 </div>
             </footer>
+            {
+                showInovice ?
+                    <SeeInovice
+                        onCancel={inoviceToggle}
+                        inovices={productData}
+                        onSubmit={SaveAddedProducts}
+                    />
+                    : null
+            }
         </div>
     );
 };

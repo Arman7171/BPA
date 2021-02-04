@@ -3,6 +3,7 @@ const Branches = require('../model/branch');
 
 const branchMiddleware = async (req, res, next) => {
     let info;
+    console.log('---------', req.body);
 
     if (!req.headers['authorization']) {
         return res.status(400).json({ error: 'Token is absent'})

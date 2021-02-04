@@ -9,7 +9,7 @@ import Branches from './Components/Pages/Branches/Branches';
 import Workers from './Components/Pages/Workers/Workers';
 import Profile from './Components/Pages/Profile';
 import Providers from './Components/Pages/Providers/Providers';
-import ProductImports from './Components/Pages/ProductImports'; 
+import ProductImports from './Components/Pages/products/ProductImports'; 
 
 export const Routes = (login, isAuthenticated) => {
 

@@ -270,7 +270,7 @@ body[data-layout=horizontal] .page-content{
     position:absolute;
     right:0;
     color:#898fa9;
-    left:250px;
+    left:49px;
     height:60px;
     -webkit-box-shadow:0 0 4px rgba(15,34,58,.12);
     box-shadow:0 0 4px rgba(15,34,58,.12)
@@ -367,7 +367,7 @@ body[data-layout=horizontal] .footer{
     transition-property:height,visibility
 }
 .vertical-menu{
-    width:250px;
+    width:55px;
     z-index:1005;
     background:#2b2e3b;
     bottom:0;
@@ -375,16 +375,36 @@ body[data-layout=horizontal] .footer{
     position:fixed;
     top:0;
     -webkit-box-shadow:0 2px 4px rgba(15,34,58,.12);
-    box-shadow:0 2px 4px rgba(15,34,58,.12)
+    box-shadow:0 2px 4px rgba(15,34,58,.12);
+    transition: all .4s;
 }
+
+.vertical-menu:hover{
+    width: 250px;
+}
+
+.sidebar-items{
+    position: absolute;
+    left: -142px;
+}
+
+.vertical-menu:hover .sidebar-items{
+    left: 50px;
+}
+
 .vertical-menu .vertical-menu-btn{
     position:absolute;
     right:0;
     top:0;
     z-index:2
 }
+
+#sidebar-menu svg{
+    font-size: 20px!important;
+}
+
 .main-content{
-    margin-left:250px;
+    margin-left: 49px;
     overflow:hidden
 }
 .main-content .content{
@@ -422,7 +442,7 @@ body[data-layout=horizontal] .footer{
     font-weight:500;
     -webkit-transition:all .4s;
     transition:all .4s;
-    margin:0 10px;
+    margin:0 -7px;
     border-radius:3px
 }
 #sidebar-menu ul li a i{
@@ -467,7 +487,7 @@ body[data-layout=horizontal] .footer{
     font-size:13.5px
 }
 .menu-title{
-    padding:12px 20px!important;
+    padding:12px 7px!important;
     letter-spacing:.05em;
     pointer-events:none;
     cursor:default;
@@ -2771,6 +2791,14 @@ input[switch=dark]:checked+label{
     color: white;
 }
 
+@media (min-width: 992px){
+.modal-lg, .modal-xl {
+    max-width: 1000px!important;
+}
+}
+
+
+
 .table td a, .table th a{
     text-align: center;
     color: yellowgreen!important;
@@ -2803,6 +2831,23 @@ input[switch=dark]:checked+label{
     left:13px;
     line-height:38px
 }
+
+.text-muted {
+    color: #ababab!important;
+}
+
+.modal-body{
+    padding: 0!important;
+}
+
+.form-control:disabled, .form-control[readonly] {
+    background-color: #d7d7d7;
+    opacity: 1;
+}
+.form-control{
+    background-color: #dee2e6!important;
+}
+
 .categories-list{
     padding:4px 0
 }
