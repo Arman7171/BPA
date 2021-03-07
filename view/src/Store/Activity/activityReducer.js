@@ -3,10 +3,14 @@ import * as actionTypes from './activityActionsType';
 export const defaultState = {
     branches: [],
     workers: [],
+    providers: [],
     loading: false,
     errorMessage: '',
     addBranchSuccess: false,
-    addWorkerSuccess: false
+    addWorkerSuccess: false,
+    removeWorkerSuccess: false,
+    addProviderSuccess: false,
+    removeProviderSuccess: false,
 };
 
 
@@ -28,7 +32,7 @@ export const activityReducer = (state = defaultState, action) => {
         case actionTypes.GET_BRANCHES_SUCCESS: 
             return {
                 ...state,
-                branches: action.branches,
+                branches: action.branches.reverse(),
                 loading: false
             };    
         case actionTypes.ADDING_BRANCHE:
@@ -54,15 +58,14 @@ export const activityReducer = (state = defaultState, action) => {
                 branches: newBranches,
                 loading: false
             };
-        }
-
-        case actionTypes.GET_WORKERS_SUCCESS:{
+        };
+        
+        case actionTypes.GET_WORKERS_SUCCESS:
             return {
                 ...state,
-                workers: action.workers,
+                workers: action.workers.reverse(),
                 loading: false
             };
-        }
         case actionTypes.ADDING_WORKER:
             return {
                 ...state,
@@ -75,7 +78,57 @@ export const activityReducer = (state = defaultState, action) => {
                 addWorkerSuccess: false,
                 loading: false
             };
+        case actionTypes.REMOVING_WORKER:
+            return {
+                ...state,
+                removeWorkerSuccess: true
+            };
+        case actionTypes.REMOVE_WORKER_SUCCESS:{
+            let workers = [...state.workers];
+            workers = workers.filter((worker) => worker.id !== action.id);
+            return{
+                ...state,
+                removeWorkerSuccess: false,
+                workers,
+                loading: false
+            }
+        };
         
-        default: return state;
+        case actionTypes.GET_PROVIDERS_SUCCESS:
+            return {
+                ...state,
+                providers: action.providers.reverse(),
+                loading: false
+            };   
+        case actionTypes.ADDING_PROVIDER:
+            return{
+                ...state,
+                addProviderSuccess: true
+            };
+        case actionTypes.ADD_PROVIDER_SUCCESS:
+            return {
+                ...state,
+                providers: [action.provider, ...state.providers],
+                addProviderSuccess: false,
+                loading: false
+            };
+        case actionTypes.REMOVING_PROVIDER:
+            return{
+                ...state,
+                removeProviderSuccess: true
+            };
+        case actionTypes.REMOVE_PROVIDER_SUCCESS:{
+            let providers = [...state.providers ];
+            providers = providers.filter((provider) => provider.id !== action.id);
+                return{
+                    ...state,
+                    removeProviderSuccess: false,
+                    providers,
+                    loading: false
+                }
+            };
+        
+        
+            default: return state;
     }
 };

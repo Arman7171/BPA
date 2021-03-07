@@ -2,8 +2,8 @@ const Sequelize = require("sequelize");
 const sequelize = require('../config/db');
 const Users = require('./users');
 const Branches = require('./branch');
-const Products = require('./products');
-const Providers = require('./providers')
+const UserImports = require('./UserImports');
+const Workers = require('./worker');
 
 const ProductPlacement = sequelize.define("productPlacement", {
     id: {
@@ -13,6 +13,10 @@ const ProductPlacement = sequelize.define("productPlacement", {
       allowNull: false
     },
     productName: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
+    QRproduct: {
       type: Sequelize.STRING,
       allowNull: false
     },
@@ -28,7 +32,7 @@ const ProductPlacement = sequelize.define("productPlacement", {
 
   Users.hasMany(ProductPlacement);
   Branches.hasMany(ProductPlacement);
-  Providers.hasMany(ProductPlacement);
-  Products.hasMany(ProductPlacement);
+  UserImports.hasMany(ProductPlacement);
+  Workers.hasMany(ProductPlacement);
 
 module.exports = ProductPlacement;

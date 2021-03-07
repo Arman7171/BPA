@@ -5,7 +5,6 @@ const Worker = require('../model/worker');
 const {check, validationResult} = require('express-validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const config = require('../config/default.json');
 const mailer = require('../email/nodemailer');
 
 router.post('/register', 
@@ -90,6 +89,7 @@ router.post('/login',
         const { email, password } = req.body;
         const user = await Users.findOne({where:{email}, raw: true });
         if(!user){
+            console.log(email);
             const worker = await Worker.findOne({where:{email}, raw: true });
             console.log('worker', worker);
             if(!worker){
@@ -105,14 +105,14 @@ router.post('/login',
                 }
                 else{
                     const token = jwt.sign(
-                        { userId: worker.id },
+                        { userId: worker.id, email },
                         'jwtSecret',
                         {expiresIn: '10000h'}
                     );
             
                     console.log('asdasd', token);
             
-                    res.json({ token, type: 'manager' })
+                    res.status(200).json({ token, type: 'manager' })
                 }
             }
         }
@@ -123,7 +123,7 @@ router.post('/login',
             }
             else{
                 const token = jwt.sign(
-                    { userId: user.id },
+                    { userId: user.id, email },
                     'jwtSecret',
                     {expiresIn: '10000h'}
                 );
@@ -139,6 +139,28 @@ router.post('/login',
     }
     
 });
+
+router.get('/user-info',
+        async (req, res) => {
+        try{
+            console.log('info-----------',req.headers);
+            const token = req.headers['authorization'].replace('Bearer ','');
+            info = jwt.verify(token, 'jwtSecret');
+            console.log('userInfo', info);
+            const userInfo = await Users.findOne({where:{id: info.userId, email: info.email}});
+            if(userInfo){
+                res.status(200).json({name: userInfo.name, lastName: userInfo.lastname});
+            }
+            else{
+                const workerInfo = await Worker.findOne({where:{id: info.userId}});
+                res.status(200).json({name: workerInfo.fullName});
+            }
+        }
+        catch (e){
+            res.status(500).json({ message: 'server error try again' });
+        }
+    }
+)
 
 router.get('/activate/:tokenConfirm', 
     async (req, res) => {

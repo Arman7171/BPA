@@ -94,7 +94,8 @@ const AddWorkerModal = (props) => {
                    
                 <div className='w-75 mx-auto'>
                         <form onSubmit={(e) => { }}>
-                            <div className="form-group">
+                            <div className='row'>
+                            <div className="form-group col-lg-6 col-md-12">
                                 <label htmlFor="name">Ամբողջական անուն</label>
                                 <input
                                     type="text"
@@ -106,7 +107,7 @@ const AddWorkerModal = (props) => {
                                 />
                             </div>
 
-                            <div className="form-group">
+                            <div className="form-group col-lg-6 col-md-12">
                                 <label htmlFor="birthDay">Ծննդյան օր</label>
                                 <input
                                     type="date"
@@ -118,7 +119,7 @@ const AddWorkerModal = (props) => {
                                 />
                             </div>
 
-                            <div className="form-group">
+                            <div className="form-group col-lg-6 col-md-12">
                                 <label htmlFor="vat">Նույնականցման քարտի համար</label>
                                 <input
                                     type="number"
@@ -130,7 +131,7 @@ const AddWorkerModal = (props) => {
                                 />
                             </div>
 
-                            <div className="form-group">
+                            <div className="form-group col-lg-6 col-md-12">
                                 <label htmlFor="ssn">Անձնագրի սերյա</label>
                                 <input
                                     type="number"
@@ -142,7 +143,7 @@ const AddWorkerModal = (props) => {
                                 />
                             </div>
 
-                            <div className="form-group">
+                            <div className="form-group col-lg-6 col-md-12">
                                 <label htmlFor="mobile">Հեռախոսահամր</label>
                                 <input
                                     type="tel"
@@ -154,7 +155,7 @@ const AddWorkerModal = (props) => {
                                 />
                             </div>
 
-                            <div className="form-group">
+                            <div className="form-group col-lg-6 col-md-12">
                                 <label htmlFor="branch">Մասնաճյուղը</label>
                                 <select id="branch" className="form-control" onChange={(e) => setBranchId(e.target.value)}>
                                     <option>---</option>
@@ -173,7 +174,7 @@ const AddWorkerModal = (props) => {
                                 </select>
                             </div>
 
-                            <div className="form-group">
+                            <div className="form-group col-lg-6 col-md-12">
                                 <label htmlFor="salary">Աշխատավարձի չափ</label>
                                 <input
                                     type="number"
@@ -185,7 +186,7 @@ const AddWorkerModal = (props) => {
                                 />
                             </div>
 
-                            <div className="form-group">
+                            <div className="form-group col-lg-6 col-md-12">
                                 <label htmlFor="rate">Դրույք</label>
                                 <select 
                                     name="" 
@@ -199,8 +200,11 @@ const AddWorkerModal = (props) => {
                                     <option value="1">1</option>
                                 </select>
                             </div>
-
-                            <div className="form-group">
+                                <hr style={{border: '1px solid'}} className='w-100 mx-3' />
+                                <div className="col-12 text-center my-3">
+                                <p>Այս դաշտերը նախատեսված են աշխատողի համար հաշիվ ստեղծելու համար(պարտադիր չեն)</p>
+                                </div>
+                            <div className="form-group col-lg-6 col-md-12">
                                 <label htmlFor="email">Մուտքի էլէկտրոնային հասցե</label>
                                 <input
                                     type="email"
@@ -212,7 +216,7 @@ const AddWorkerModal = (props) => {
                                 />
                             </div>
 
-                            <div className="form-group">
+                            <div className="form-group col-lg-6 col-md-12">
                                 <label htmlFor="password">Գաղտնաբառ</label>
                                 <input
                                     type="password"
@@ -224,7 +228,7 @@ const AddWorkerModal = (props) => {
                                 />
                             </div>
 
-                            <div className="form-group">
+                            <div className="form-group col-lg-6 col-md-12">
                                 <label htmlFor="confPassword">Կրկնել Գաղտնաբառը</label>
                                 <input
                                     type="password"
@@ -234,6 +238,7 @@ const AddWorkerModal = (props) => {
                                     onChange={(e) => setConfPassword(e.target.value)}
                                     required={true}
                                 />
+                            </div>
                             </div>
                         </form>
                         {

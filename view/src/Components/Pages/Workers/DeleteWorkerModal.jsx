@@ -15,7 +15,7 @@ const DeleteWorkerModal = (props) => {
         >
             <Modal.Header closeButton>
             </Modal.Header>
-                <h4 className='my-4 ml-3'>Ցանակնում ե՞ք հեռացնել {props.fullName} Աշխատակցին</h4>
+                <h4 className='my-4 ml-3'>Ցանակնում ե՞ք հեռացնել {props.fullname} Աշխատակցին</h4>
             <Modal.Footer>
                 <Button onClick={()=>onSubmit(props.id)} className='text-left' variant='success'>Այո</Button>
                 <Button onClick={onCancel} variant='danger'>Ոչ</Button>

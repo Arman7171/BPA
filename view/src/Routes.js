@@ -9,9 +9,11 @@ import Branches from './Components/Pages/Branches/Branches';
 import Workers from './Components/Pages/Workers/Workers';
 import Profile from './Components/Pages/Profile';
 import Providers from './Components/Pages/Providers/Providers';
+import Products from "./Components/Pages/products/Products";
 import ProductImports from './Components/Pages/products/ProductImports'; 
+import ProductExports from './Components/Pages/products/ProductExports'; 
 
-export const Routes = (login, isAuthenticated) => {
+export const Routes = (isAuthenticated) => {
 
     if(isAuthenticated){
         return(
@@ -23,7 +25,9 @@ export const Routes = (login, isAuthenticated) => {
                 <Route path='/workers' component={Workers} />
                 <Route path='/profile/:id' component={Profile} />
                 <Route path='/providers' component={Providers} />
+                <Route path='/products' component={Products} />
                 <Route path='/productImports' component={ProductImports} />
+                <Route path='/productExports' component={ProductExports} />
                 <Redirect to='/not-found' />
             </Switch>
         );
@@ -32,7 +36,7 @@ export const Routes = (login, isAuthenticated) => {
     else{
         return(
             <Switch>
-                <Route path='/' exact render={(prop) => <Login {...prop} Login={login} isAuthed={true} />} />
+                <Route path='/' exact component={Login} />
                 <Route path='/not-found' component={NotFound} />
                 <Route path='/registration' component={Register} />
                 <Route path='/activate/:token' component={Activate} />

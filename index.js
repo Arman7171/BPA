@@ -6,7 +6,7 @@ const registerRouter = require('./controller/auth');
 const BranchRouter = require('./controller/branch');
 const WorkerRouter = require('./controller/worker');
 const ProviderRouter = require('./controller/provider');
-const ProductsRouter = require('./controller/products');
+const ProductsRouter = require('./controller/UserImports');
 const sequelize = require("./config/db");
 
 app.use(cors());

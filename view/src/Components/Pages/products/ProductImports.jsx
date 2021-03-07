@@ -5,22 +5,22 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import SeeInovice from './SeeInovices';
+import { connect } from 'react-redux';
+import { addUserImport, addWorkerImport } from '../../../Store/Products/productActions';
+import { getBranches, getProviders } from "../../../Store/Activity/activityActions";
 
-const ProductImports = () => {
+const ProductImports = ({providers, addWorkerImport, branches, getBranches, getProviders, addUserImport, addingComplate, addImportSuccess}) => {
     const [type,] = useState(localStorage.getItem('type'));
     const [myImportedProducts, setMyImportedProducts] = useState([]);
-    const [providers, setProviders] = useState([]);
     const [providerId, setProviderId] = useState('');
     const [providerAddres, setProviderAddres] = useState('');
     const [providerVat, setProviderVat] = useState('');
-    const [branches, setBranches] = useState([]);
     const [showInovice, setShowInovice] = useState(false);
+    const [products, setProducts] = useState([]);
     const [productData, setProductData] = useState([
         {
-            productName: '', unit: 'հատ', count: '', price: '', discount: 0, total: 0, status: 'import',
-            productPlacement: [
-                { branchId: '', productCount: '' }
-            ]
+            productName: '', QRProduct: '', unit: 'հատ', count: '', price: '', salePrice: '', discount: 0, total: 0, placementId: '',  
+            productPlacement: []
         }
     ]);
 
@@ -31,27 +31,43 @@ const ProductImports = () => {
         }
     };
 
+    useEffect(() => {
+        if(addImportSuccess && addingComplate){
+            if(type === 'manager'){
+                axios.get(`${URL}/product/mybranch-products`, config)
+                .then((res) => {
+                    console.log('my-product', res)
+                    setMyImportedProducts(res.data)
+                })
+                .catch(err => console.log('err', err.response))
+            } 
+            setShowInovice(false);
+            setProductData([
+                {
+                    productName: '', QRProduct: '', unit: 'հատ', count: '', price: '', salePrice: '', discount: 0, total: 0,   
+                    productPlacement: []
+                }
+            ]);
+            alert('Ապրանքը հաջողությամբ մուտքագրվեց');
+        }
+    }, [addImportSuccess])
 
     useEffect(() => {
-        axios.get(`${URL}/provider/my-providers`, config)
-            .then((res) => {
-                console.log('my branches', res);
-                setProviders(res.data);
-            })
-            .catch(err => console.log(err.response))
-
-        axios.get(`${URL}/branch/my-branches`, config)
-            .then((res) => {
-                console.log('my branches', res);
-                setBranches(res.data);
-            })
-            .catch(err => console.log(err.response))
-
+        getBranches();
+        getProviders();
         if(type === 'manager'){
             axios.get(`${URL}/product/mybranch-products`, config)
             .then((res) => {
                 console.log('my-product', res)
                 setMyImportedProducts(res.data)
+            })
+            .catch(err => console.log('err', err.response))
+        }
+        else{
+            axios.get(`${URL}/product/my-products`, config)
+            .then((res) => {
+                console.log('my-product', res)
+                setProducts(res.data);
             })
             .catch(err => console.log('err', err.response))
         }
@@ -87,6 +103,25 @@ const ProductImports = () => {
     }
 
     const inoviceToggle = () => {
+        console.log(productData);
+        if(type !== 'manager'){
+        for(let i=0; i<productData.length; i++){
+            let count = 0;
+            if(productData[i].productPlacement.length===0){
+                alert('Ապրանքի տեղաբաշխումը բացակայում է');
+                return;
+            }
+            for(let j in productData[i].productPlacement){
+                console.log(productData[i].productPlacement[j].productCount);
+                count+=+productData[i].productPlacement[j].productCount
+            }
+            if(productData[i].count != count){
+                console.log(productData[i].count, count);
+                alert('Տեղաբաշխման տվյալները չեն համապատասխանում մուտքագրվածին');
+                return;
+            }
+        }
+        }
         setShowInovice(!showInovice);
     };
 
@@ -94,10 +129,8 @@ const ProductImports = () => {
         const newData = [...productData];
         newData.push(
             {
-                productName: '', unit: 'հատ', count: '', price: '', discount: 0, total: 0,
-                productPlacement: [
-                    { branchId: '', productCount: '' }
-                ]
+                productName: '', QRProduct: '', unit: 'հատ', count: '', price: '', salePrice: '', discount: 0, total: 0, placementId: '',
+                productPlacement: []
             }
         )
 
@@ -114,21 +147,35 @@ const ProductImports = () => {
         setProviderVat(providers[index].vat);
     };
 
-    const checkProduct = id => {
-        console.log(id);
-        axios.get(`${URL}/product/product-info/${id}`, config)
-        .then(res => {
-            console.log('info', res);
-        })
+    const checkProduct = (id, dataIndex) => {
+        const data = [...productData];
+        let index = products.findIndex((product) => +product.id === +id);
+        data[dataIndex].productName = products[index].productName;
+        data[dataIndex].QRProduct = products[index].QRproduct;
+        data[dataIndex].unit = products[index].unit;
+        data[dataIndex].price = products[index].price;
+        setProductData(data);
+        getTotal(dataIndex);
+    };
+
+    const checkWorkerProduct = (id, dataIndex) => {
+        console.log(id, myImportedProducts);
+        const data = [...productData];
+        let index = myImportedProducts.findIndex((product) => +product.id === +id);
+        data[dataIndex].productName = myImportedProducts[index].productName;
+        data[dataIndex].QRProduct = myImportedProducts[index].QRproduct;
+        data[dataIndex].placementId = myImportedProducts[index].id;
+        setProductData(data);
     };
 
     const SaveAddedProducts = () => {
-        axios.post(`${URL}/product/add-products`, { productData, providerId }, config)
-            .then((res) => {
-                console.log('add-product', res.data);
-                inoviceToggle();
-            })
-            .catch((err) => console.log('err', err.response))
+        console.log(productData);
+        if(type==='manager'){
+            addWorkerImport(productData)
+        }
+        else{
+            addUserImport(productData, providerId)
+        }
     };
 
     return (
@@ -157,7 +204,7 @@ const ProductImports = () => {
                                     <>
                                         <h5 className='mb-4'>Մատակարարի տվյալները</h5>
                                         <div className="row">
-                                            <div className="col-6">
+                                            <div className="col-4">
                                                 <div className="form-group">
                                                     <label htmlFor="name">Մատակարարի անվանումը</label>
                                                     <select name="" id="name" className='form-control' onChange={(e) => checkProvider(e.target.value)}>
@@ -177,7 +224,7 @@ const ProductImports = () => {
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div className="col-6">
+                                            <div className="col-4">
                                                 <div className="form-group">
                                                     <label htmlFor="addres">Հասցե</label>
                                                     <input
@@ -189,7 +236,7 @@ const ProductImports = () => {
                                                     />
                                                 </div>
                                             </div>
-                                            <div className="col-6">
+                                            <div className="col-4">
                                                 <div className="form-group">
                                                     <label htmlFor="vat">ՀՎՀՀ</label>
                                                     <input
@@ -204,6 +251,7 @@ const ProductImports = () => {
                                         </div>
                                     </>
                             }
+                            <hr className='bg-white' />
                             {
                                 productData.map((product, index) => {
                                     return (
@@ -215,17 +263,17 @@ const ProductImports = () => {
                                             <>
                                             <div className="col-6">
                                                 <div className="form-group">
-                                                    <label htmlFor="name">Մուտքագրված ապրանքների ցանկը</label>
-                                                    <select name="" id="name" className='form-control' onChange={(e) => checkProduct(e.target.value)}>
-                                                        <option>---</option>
+                                                    <label htmlFor="name">Մուտքագրվող ապրանքների ցանկը</label>
+                                                    <select name="" id="name" className='form-control' onChange={(e) => checkWorkerProduct(e.target.value, index)}>
+                                                        <option value=''>---</option>
                                                         {
                                                             myImportedProducts.map((product) => {
                                                                 return (
                                                                     <option
                                                                         key={product.id}
-                                                                        value={product.productId}
+                                                                        value={product.id}
                                                                     >
-                                                                        {product.id}
+                                                                        {product.productName} (QR` {product.QRproduct})
                                                                     </option>
                                                                 );
                                                             })
@@ -234,9 +282,29 @@ const ProductImports = () => {
                                                 </div>
                                             </div>
                                             <div className='col-6'></div>
-                                            </> : null
+                                            </> : 
+                                              <div className="col-3">
+                                              <div className="form-group">
+                                                  <label htmlFor="name">Մուտք եղած ապրանքներ</label>
+                                                  <select name="" id="name" className='form-control' onChange={(e) => checkProduct(e.target.value, index)}>
+                                                      <option>---</option>
+                                                      {
+                                                          products.map((product) => {
+                                                              return (
+                                                                  <option
+                                                                      key={product.id}
+                                                                      value={product.id}
+                                                                  >
+                                                                      {product.productName} (QR` {product.QRproduct})
+                                                                  </option>
+                                                              );
+                                                          })
+                                                      }
+                                                  </select>
+                                              </div>
+                                          </div>
                                         }
-                                                <div className="col-6">
+                                                <div className={`${type === 'manager' ? 'col-4' : 'col-3'}`}>
                                                     <div className="form-group">
                                                         <label htmlFor="productName">Ապրանքի անվանումը</label>
                                                         <input
@@ -249,7 +317,22 @@ const ProductImports = () => {
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-6">
+                                                <div className={`${type === 'manager' ? 'col-4' : 'col-3'}`}>
+                                                    <div className="form-group">
+                                                        <label htmlFor="productName">Ապրանքի շտրիխ կոդը</label>
+                                                        <input
+                                                            disabled={type === 'manager' && true}
+                                                            type="text"
+                                                            className="form-control"
+                                                            id="qrProduct"
+                                                            value={product.QRProduct}
+                                                            onChange={(e) => addProduct(e.target.value, index, 'QRProduct')}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                {
+                                                    type === 'manager' ? null : 
+                                                    <div className="col-3">
                                                     <div className="form-group">
                                                         <label htmlFor="item">Չափման միաոր</label>
                                                         <select
@@ -263,7 +346,8 @@ const ProductImports = () => {
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div className="col-6">
+                                                }
+                                                <div className={type==='manager' ? 'col-4' : 'col-3'}>
                                                     <div className="form-group">
                                                         <label htmlFor="count">Քանակ</label>
                                                         <input
@@ -278,7 +362,10 @@ const ProductImports = () => {
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-6">
+                                                {
+                                                    type === 'manager' ? null :
+                                                    <>
+                                                <div className="col-3">
                                                     <div className="form-group">
                                                         <label htmlFor="price">Միաոր գին</label>
                                                         <input
@@ -294,7 +381,22 @@ const ProductImports = () => {
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-6">
+                                                <div className="col-3">
+                                                    <div className="form-group">
+                                                        <label htmlFor="saleprice">Վաճառքի գին</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            id="saleprice"
+                                                            value={product.salePrice}
+                                                            disabled={type === 'manager' && true}
+                                                            onChange={(e) => {
+                                                                addProduct(e.target.value, index, 'salePrice')
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-3">
                                                     <div className="form-group">
                                                         <label htmlFor="discount">Զեղչ</label>
                                                         <input
@@ -310,7 +412,7 @@ const ProductImports = () => {
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="col-6">
+                                                <div className="col-2 offset-5">
                                                     <div className="form-group">
                                                         <label htmlFor="total">Արժեքը</label>
                                                         <input
@@ -322,16 +424,19 @@ const ProductImports = () => {
                                                         />
                                                     </div>
                                                 </div>
+                                                    </>
+                                                }
+                                              
                                             </div>
                                             {
                                                 type !== 'manager' ? 
-                                                <>
-                                                    <h5 className='my-4'>Ապրանքի տեղաբաշխում</h5>
+                                                <div>
+                                                    <h5 className='my-4'>Ապրանքի տեղաբաշխում Մասնաճյուղերով</h5>
                                             {
                                                 product.productPlacement.map((placement, productIndex) => {
                                                     return (
-                                                        <>
-                                                            <div className="row" key={productIndex}>
+                                                        <div key={productIndex}>
+                                                            <div className="row">
                                                                 <div className="col-6">
                                                                     <div className="form-group">
                                                                         <label htmlFor="name">Մասնաճյուղ</label>
@@ -369,7 +474,7 @@ const ProductImports = () => {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </>
+                                                        </div>
                                                     )
                                                 })
                                             }
@@ -383,7 +488,7 @@ const ProductImports = () => {
                                                     Ավելացնել Մասնաճյուղ
                                                 </button>
                                             </div>
-                                                </> : null
+                                                </div> : null
                                             }
                                             
                                             <hr style={{ background: 'white' }} />
@@ -399,7 +504,7 @@ const ProductImports = () => {
                                         addProductData();
                                     }}
                                 >
-                                    Ավելացնել նույն Մատակարարի հաջորդ ապրանքը
+                                    {type === 'manager' ? 'Ավելացնել հաջորդ ապրանքը' : 'Ավելացնել նույն Մատակարարի հաջորդ ապրանքը'}
                             </button>
                             </div>
                         </div>
@@ -435,6 +540,7 @@ const ProductImports = () => {
                         onCancel={inoviceToggle}
                         inovices={productData}
                         onSubmit={SaveAddedProducts}
+                        type={type}
                     />
                     : null
             }
@@ -442,4 +548,20 @@ const ProductImports = () => {
     );
 };
 
-export default ProductImports;
+const mapStateToProps = (state) =>{
+    return{
+        branches: state.activityReducer.branches,
+        providers: state.activityReducer.providers,  
+        addImportSuccess: state.productReducer.addImportSuccess,
+        addingComplate: state.productReducer.addingComplate  
+    }
+};
+
+const mapDispatchToProps = {
+    getBranches,
+    getProviders,
+    addUserImport,
+    addWorkerImport
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductImports);

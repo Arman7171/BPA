@@ -10,14 +10,14 @@ const Inovice = (props) => {
         var allPrices = 0;
         inovices.map((inovice) => {
             console.log('total', inovice.total);
-            return allPrices+= inovice.total;
+            return allPrices += inovice.total;
         })
         setAllTotal(allPrices);
     }, []);
     return (
-        <div className="main-content" style={{margin: '0'}}>
+        <div className="main-content" style={{ margin: '0' }}>
 
-            <div className="page-content" style={{padding: '14px 0'}}>
+            <div className="page-content" style={{ padding: '14px 0' }}>
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-lg-12">
@@ -73,43 +73,70 @@ const Inovice = (props) => {
                                             <table className="table table-nowrap table-centered mb-0">
                                                 <thead>
                                                     <tr>
-                                                        <th style={{width: '70px'}}>No.</th>
+                                                        <th style={{ width: '70px' }}>No.</th>
                                                         <th>Անվանումը</th>
-                                                        <th>Գինը</th>
-                                                        <th>Քանակը</th>
-                                                        <th>Զեղչ</th>
-                                                        <th className="text-right" style={{width: '120px'}}>Արժեք</th>
+                                                        {
+                                                            props.type === 'manager' ?
+                                                            <>
+                                                                <th>QR</th>
+                                                                <th>Քանակը</th>
+                                                            </>
+                                                                :
+                                                                <>
+                                                                    <th>Գինը</th>
+                                                                    <th>Քանակը</th>
+                                                                    <th>Զեղչ</th>
+                                                                    <th className="text-right" style={{ width: '120px' }}>Արժեք</th>
+                                                                </>
+                                                        }
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {
                                                         inovices.map((inovice, index) => {
-                                                            return(
+                                                            return (
                                                                 <tr key={index}>
-                                                                    <th scope="row"> {index+1} </th>
+                                                                    <th scope="row"> {index + 1} </th>
                                                                     <td>
                                                                         <h5 className="font-size-15 mb-1"> {inovice.productName} </h5>
                                                                     </td>
-                                                                    <td> {inovice.price} </td>
-                                                                    <td> {inovice.count} {inovice.unit} </td>
-                                                                    <td> {inovice.discount} </td>
-                                                                    <td className="text-right"> {inovice.total} </td>
+                                                                    {
+                                                                        props.type === 'manager' ?
+                                                                            <>
+                                                                                <th>{inovice.QRProduct}</th>
+                                                                                <td> {inovice.count} {inovice.unit} </td>
+                                                                            </>
+                                                                            :
+                                                                            <>
+                                                                                <td> {inovice.price} </td>
+                                                                                <td> {inovice.count} {inovice.unit} </td>
+                                                                                <td> {inovice.discount} </td>
+                                                                                <td className="text-right"> {inovice.total} </td>
+                                                                            </>
+                                                                    }
+
                                                                 </tr>
                                                             );
                                                         })
                                                     }
-                                                    <tr>
-                                                        <th scope="row" colSpan="5" className="text-right"><h3>Total</h3></th>
-                                                        <td className="text-right"><h4> {allTotal} </h4></td>
-                                                    </tr>
-                                     
+                                                    {
+                                                        props.type === 'manager' ?
+                                                            null :
+                                                            <>
+                                                                <tr>
+                                                                    <th scope="row" colSpan="5" className="text-right"><h3>Total</h3></th>
+                                                                    <td className="text-right"><h4> {allTotal} </h4></td>
+                                                                </tr>
+                                                            </>
+                                                    }
+
                                                 </tbody>
                                             </table>
                                         </div>
                                         <div className="d-print-none mt-4">
                                             <div className="float-right">
                                                 <a href="" className="btn btn-success waves-effect waves-light mr-1"><i className="fa fa-print"></i></a>
-                                                <a href="#" className="btn btn-primary w-md waves-effect waves-light" onClick={props.onSubmit}>Send</a>
+                                                <a href="#" className="btn btn-primary w-md waves-effect waves-light" onClick={props.onSubmit}>Պահպանել</a>
                                             </div>
                                         </div>
                                     </div>

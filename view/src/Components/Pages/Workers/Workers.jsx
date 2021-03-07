@@ -5,9 +5,9 @@ import AddWorkerModal from './AddWorkerModal';
 import DeleteWorkerModal from './DeleteWorkerModal';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getWorkers, addWorker } from "../../../Store/Activity/activityActions";
+import { getWorkers, addWorker, removeWorker } from "../../../Store/Activity/activityActions";
 
-const Workers = ({getWorkers, addWorker, workers, errorMessage, addWorkerSuccess}) => {
+const Workers = ({getWorkers, addWorker, workers, errorMessage, addWorkerSuccess, removeWorker, removeWorkerSuccess}) => {
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [fullName, setFullName] = useState('');
@@ -21,7 +21,10 @@ const Workers = ({getWorkers, addWorker, workers, errorMessage, addWorkerSuccess
         if(!addWorkerSuccess){
             setShowModal(false);
         }
-    }, [addWorkerSuccess]);
+        if(!removeWorkerSuccess){
+            setShowDeleteModal(false);
+        }
+    }, [addWorkerSuccess, removeWorkerSuccess]);
 
     const toggleConfirm = () => {
         setShowModal(!showModal);
@@ -31,19 +34,6 @@ const Workers = ({getWorkers, addWorker, workers, errorMessage, addWorkerSuccess
         setId(id);
         setFullName(fullName);
         setShowDeleteModal(!showDeleteModal);
-    }
-
-    const removeWorker = (id) => {
-        // axios.delete(`${URL}/worker/delete/${id}`, config)
-        // .then((res) => {
-        //     console.log('my workers', res);
-        //     const otherWorkers = [...workers]
-        //     var index = workers.findIndex((worker) => worker.id === id);
-        //     otherWorkers.splice(index, 1);
-        //     setWorkers(otherWorkers);
-        //     setShowDeleteModal(false);
-        // })
-        // .catch(err => console.log(err.response))
     };
 
     return (
@@ -183,7 +173,7 @@ const Workers = ({getWorkers, addWorker, workers, errorMessage, addWorkerSuccess
                     onSubmit={removeWorker}
                     onCancel={showdeleteModal}
                     id={id}
-                    fullName={fullName}
+                    fullname={fullName}
                 />
             }
         </div>
@@ -194,13 +184,15 @@ const mapStateToProps = (state) => {
     return{
         workers: state.activityReducer.workers,
         addWorkerSuccess: state.activityReducer.addWorkerSuccess,
-        errorMessage: state.activityReducer.errorMessage
+        errorMessage: state.activityReducer.errorMessage,
+        removeWorkerSuccess: state.activityReducer.removeWorkerSuccess
     }
 };
 
 const mapDispatchToProps={
     getWorkers,
-    addWorker
+    addWorker,
+    removeWorker
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Workers);

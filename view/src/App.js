@@ -1,28 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Routes } from './Routes';
-import { BrowserRouter as Route } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import SideBar from './Components/sideBar';
 import Header from './Components/header';
 import Spinner from './Components/Spinner/Spinner';
 import { connect } from 'react-redux';
+import { history } from "./helpers/history";
 
-function App(props) {
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
-
-  useEffect(() => {
-    login();
-  }, []);
-
-  const login = () => {
-    console.log('localStorage', !!localStorage.getItem('token'));
-    setIsAuthenticated(!!localStorage.getItem('token'));
-  }
+function App({isAuthenticated, loading, productLoadin}) {
   
-  const { loading } = props;
   return (
     <div className="App">
-      <Route>
+      <Router history={history}>
         {
           isAuthenticated ? 
             <>
@@ -31,18 +21,20 @@ function App(props) {
             </> :
              null
         }
-        {Routes(login, isAuthenticated)}
+          {Routes(isAuthenticated)}
         {
-          loading ? <Spinner /> : null
+          loading || productLoadin ? <Spinner /> : null
         }
-      </Route>
+      </Router>
     </div>
   );
 }
 
 const mapStateToProps = (state) => {
   return{
-    loading: state.activityReducer.loading
+    loading: state.activityReducer.loading,
+    productLoadin: state.productReducer.loading,
+    isAuthenticated: state.authReducer.isAuthenticated
   }
 };
 

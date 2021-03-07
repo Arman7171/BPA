@@ -1,54 +1,34 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { URL } from '../../../config/config';
-import axios from 'axios';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AddProviderModal from './AddProviderModal';
 import DeleteProviderModal from './DeleteProviderModal';
+import { connect } from 'react-redux';
+import { getProviders, addProvider, removeProvider } from "../../../Store/Activity/activityActions";
 
-const Providers = () => {
+const Providers = ({getProviders, providers, addProviderSuccess, removeProviderSuccess, errorMessage, addProvider, removeProvider}) => {
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [errMessage, setErrMessage] = useState('');
-    const [providers, setProviders] = useState([]);
     const [name, setName] = useState('');
     const [id, setId] = useState('');
 
-    var token = localStorage.getItem('token');
-    const config = {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        }
-    };
+    useEffect(() => {
+        getProviders();
+    }, []);
 
     useEffect(() => {
-        axios.get(`${URL}/provider/my-providers`, config)
-            .then((res) => {
-                console.log('my branches', res);
-                setProviders(res.data);
-            })
-            .catch(err => console.log(err.response))
-    }, []);
+        if(!addProviderSuccess){
+            setShowModal(false);
+        }
+        if(!removeProviderSuccess){
+            setShowDeleteModal(false);
+        }
+    }, [addProviderSuccess, removeProviderSuccess]);
 
     const toggleConfirm = () => {
         setShowModal(!showModal);
-        setErrMessage('');
-    };
-
-    const addProvider = (data) => {
-        console.log('add', data);
-        axios.post(`${URL}/provider/add`, data, config)
-            .then((res) => { 
-                console.log('provider', res);
-                setProviders([ res.data, ...providers]);
-                setShowModal(false); 
-            })
-            .catch(err => {
-                console.log('provider', err.response.data.error);
-                setErrMessage(err.response.data.error);
-            });
     };
 
     const showdeleteModal = (id, name) => {
@@ -56,20 +36,6 @@ const Providers = () => {
         setName(name);
         setShowDeleteModal(!showDeleteModal);
     }
-
-    const removeProvider = (id) => {
-        axios.delete(`${URL}/provider/delete/${id}`, config)
-        .then((res) => {
-            console.log('my provider', res);
-            const otherProviders = [...providers]
-            var index = providers.findIndex((provider) => provider.id === id);
-            otherProviders.splice(index, 1);
-            setProviders(otherProviders);
-            setShowDeleteModal(false);
-        })
-        .catch(err => console.log(err.response))
-    };
-
 
     return (
         <div className="main-content">
@@ -198,7 +164,7 @@ const Providers = () => {
                 <AddProviderModal
                     onSubmit={addProvider}
                     onCancel={toggleConfirm}
-                    message={errMessage}
+                    message={errorMessage}
                 />
             }
             {
@@ -214,4 +180,19 @@ const Providers = () => {
     );
 }
 
-export default Providers;
+const mapStateToProps = (state) => {
+    return{
+        providers: state.activityReducer.providers,
+        addProviderSuccess: state.activityReducer.addProviderSuccess,
+        errorMessage: state.activityReducer.errorMessage,
+        removeProviderSuccess: state.activityReducer.removeProviderSuccess
+    }
+};
+
+const mapDispatchToProps = {
+    getProviders,
+    addProvider,
+    removeProvider
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Providers);

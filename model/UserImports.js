@@ -3,21 +3,21 @@ const sequelize = require('../config/db');
 const Users = require('./users');
 const Providers = require('./providers');
 
-const Products = sequelize.define("products", {
+const UserImports = sequelize.define("userImports", {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true,
       allowNull: false
     },
-    QRproduct: {
-      type: Sequelize.STRING,
-      allowNull: false
-    },
     productName: {
       type: Sequelize.STRING,
       allowNull: false
     },
+    QRproduct: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
     unit: {
         type: Sequelize.STRING,
         allowNull: false
@@ -34,9 +34,17 @@ const Products = sequelize.define("products", {
       type: Sequelize.DOUBLE,
       allowNull: false
     },
+    discount: {
+        type: Sequelize.DOUBLE,
+        allowNull: false
+    },
+    total: {
+        type: Sequelize.DOUBLE,
+        allowNull: false
+    },
   });
 
-  Users.hasMany(Products);
-  Providers.hasMany(Products);
+  Users.hasMany(UserImports);
+  Providers.hasMany(UserImports);
 
-module.exports = Products;
+module.exports = UserImports; 

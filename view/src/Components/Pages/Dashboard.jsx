@@ -1,33 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { URL } from '../../config/config';
+import { connect } from "react-redux";
+import { getBranches, getProviders, getWorkers } from "../../Store/Activity/activityActions";
 
-const Home = () => {
-    const [workers, setWorkers] = useState([]);
-    const [branches, setBranches] = useState([]);
-    const [type, setType] = useState(localStorage.getItem('type'));
-    var token = localStorage.getItem('token');
-    const config = {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        }
-    };
+const Home = ({getBranches, getProviders, getWorkers, providers, workers, branches}) => {
+
+    const [type, ] = useState(localStorage.getItem('type'));
 
     useEffect(() => {
-        axios.get(`${URL}/worker/my-workers`, config)
-            .then((res) => {
-                console.log('my workers', res);
-                setWorkers(res.data);
-            })
-            .catch(err => console.log(err.response))
-
-            axios.get(`${URL}/branch/my-branches`, config)
-            .then((res) => {
-                console.log('my branches', res);
-                setBranches(res.data);
-            })
-            .catch(err => console.log(err.response))
+        getBranches();
+        getProviders();
+        getWorkers();
     }, []);
     return (
         <div className="main-content">
@@ -36,12 +19,12 @@ const Home = () => {
                     <div className="row">
                         <div className="col-12">
                             <div className="page-title-box d-flex align-items-center justify-content-between">
-                                <h4 className="mb-0">Dashboard</h4>
+                                <h4 className="mb-0">Աշխատասենյակ</h4>
 
                                 <div className="page-title-right">
                                     <ol className="breadcrumb m-0">
-                                        <li className="breadcrumb-item"><Link to="">Minible</Link></li>
-                                        <li className="breadcrumb-item active">Dashboard</li>
+                                        <li className="breadcrumb-item"><Link to="">BPA</Link></li>
+                                        <li className="breadcrumb-item active">Աշխատասենյակ</li>
                                     </ol>
                                 </div>
 
@@ -91,8 +74,8 @@ const Home = () => {
                                             <div id="customers-chart"> </div>
                                         </div>
                                         <div>
-                                            <h4 className="mb-1 mt-1"><span data-plugin="counterup">45,254</span></h4>
-                                            <p className="text-muted mb-0">Customers</p>
+                                            <h4 className="mb-1 mt-1"><span data-plugin="counterup"> {providers.length} </span></h4>
+                                            <p className="text-muted mb-0">Մատակարարներ</p>
                                         </div>
                                         <p className="text-muted mt-3 mb-0"><span className="text-danger mr-1"><i className="mdi mdi-arrow-down-bold ml-1"></i>6.24%</span> since last week
                                         </p>
@@ -280,6 +263,20 @@ const Home = () => {
             </div>
         </div>
     );
-}
+};
 
-export default Home;
+const mapStateToProps = (state) => {
+    return{
+        workers: state.activityReducer.workers,
+        branches: state.activityReducer.branches,
+        providers: state.activityReducer.providers,
+    }
+};
+
+const mapDispatchToProps = {
+    getBranches,
+    getWorkers,
+    getProviders,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

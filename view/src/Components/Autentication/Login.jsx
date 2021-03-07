@@ -1,33 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { connect } from "react-redux";
+import { signIn } from "../../Store/Auth/authActions";
+import { history } from "../../helpers/history";
 
-const Login = (props) => {
+const Login = ({signIn, errorMessage, isAuthenticated}) => {
     const [email, setEmail] = useState('');
     const [password, setPossword] = useState('');
     const [status, ] = useState( new URLSearchParams(window.location.search).get("status"));
-    const [errorMessage, setErrorMessage] = useState(null);
 
-    const sendDate = () => {
-        console.log(email, password);
-        axios.post(
-            'http://localhost:5000/login', 
-            { email, password }
-        )
-        .then((res) => {
-            console.log('login', res);
-            localStorage.setItem('token', res.data.token);
-            if(res.data.type){
-                localStorage.setItem('type', res.data.type);
-            }
-            props.Login();
-            props.history.push('/dashboard')
-        })
-        .catch((err) => {
-            console.log('login err', err.response);
-            setErrorMessage(err.response.data.message);
-        })
-    }
+    useEffect(() => {
+        if(isAuthenticated){
+            history.push('/dashboard')
+        }
+    }, [isAuthenticated]);
 
     return (
         <div className='authentication-bg'>
@@ -57,7 +43,7 @@ const Login = (props) => {
                                         }
                                     </div>
                                     <div className="p-2 mt-4">
-                                        <form onSubmit={(e) => {e.preventDefault(); sendDate()}}>
+                                        <form onSubmit={(e) => {e.preventDefault(); signIn({email, password})}}>
 
                                             <div className="form-group">
                                                 <label htmlFor="useremail">Էլէկտրոնային հասցէ</label>
@@ -111,4 +97,15 @@ const Login = (props) => {
     );
 }
 
-export default Login;
+const mapStateToProps = (state) => {
+    return{
+        errorMessage: state.authReducer.errorMessage,
+        isAuthenticated: state.authReducer.isAuthenticated
+    }
+};
+
+const mapDispatchToProps = {
+    signIn
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

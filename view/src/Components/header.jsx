@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from "react-redux";
+import { getUserInfo } from "../Store/Auth/authActions";
 
-const Header = () => {
+const Header = ({getUserInfo, name, lastName}) => {
+
+    useEffect(() => {
+        getUserInfo();
+    }, []);
+
     return (
         <header id="page-topbar">
         <div className="navbar-header">
@@ -37,7 +44,7 @@ const Header = () => {
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img className="rounded-circle header-profile-user" src="/assets/images/users/avatar-4.jpg"
                             alt="Header Avatar" />
-                        <span className="text-white d-xl-inline-block ml-1 font-weight-medium font-size-15">Marcus</span>
+                        <span className="text-white d-xl-inline-block ml-1 font-weight-medium font-size-15"> {name} {lastName} </span>
                         <i className="uil-angle-down d-none d-xl-inline-block font-size-15"></i>
                     </button>
                     <div className="dropdown-menu dropdown-menu-right">
@@ -67,4 +74,15 @@ const Header = () => {
     );
 }
 
-export default Header;
+const mapStateToProps = (state) =>{
+    return{
+        name: state.authReducer.name,
+        lastName: state.authReducer.lastName
+    }
+};
+
+const mapDispatchToProps = {
+    getUserInfo
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

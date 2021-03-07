@@ -1,6 +1,5 @@
 import React from "react";
-import { useState } from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import Inovice from '../../Inovice';
 
 const SeeInovices = (props) => {
@@ -8,7 +7,6 @@ const SeeInovices = (props) => {
 
     const sendData = () => {
         onSubmit();
-        onCancel();
     }
 
     return (
@@ -28,6 +26,7 @@ const SeeInovices = (props) => {
                    <Inovice 
                         inovices={props.inovices}
                         onSubmit={sendData}
+                        type={props.type}
                     />
                 </Modal.Body>
         </Modal>
