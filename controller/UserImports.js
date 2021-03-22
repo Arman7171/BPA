@@ -56,6 +56,7 @@ router.post('/add-products', async (req, res) => {
                             QRproduct: productData[i].QRProduct,
                             status: false,
                             branchId: productData[i].productPlacement[j].branchId,
+                            price: productData[i].price,
                             userId: info.userId,
                             userImportId: data.dataValues.id
                         })

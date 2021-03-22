@@ -4,8 +4,17 @@ export const defaultState = {
     branches: [],
     workers: [],
     providers: [],
+    branchWorkers: [],
     loading: false,
     errorMessage: '',
+    monthImports: 0,
+    prevMonthImports: 0,
+    branchImports: [],
+    monthExports: 0,
+    prevMonthExports: 0,
+    branchExports: [],
+    importPercent: 0,
+    exportPracent: 0,
     addBranchSuccess: false,
     addWorkerSuccess: false,
     removeWorkerSuccess: false,
@@ -59,7 +68,34 @@ export const activityReducer = (state = defaultState, action) => {
                 loading: false
             };
         };
-        
+        case actionTypes.GET_BRANCH_WORKER_SUCCESS:{
+            return {
+                ...state,
+                branchWorkers: action.branchWorkers,
+                loading: false
+            };
+        };
+        case actionTypes.GET_BRANCH_IMPORTS_SUCCESS:{
+            return {
+                ...state,
+                monthImports: action.importInfo.monthImports,
+                importPercent: action.importInfo.percent,
+                branchImports: action.importInfo.imports,
+                prevMonthImports: action.importInfo.prevMonthImports,
+                loading: false
+            };
+        };
+        case actionTypes.GET_BRANCH_EXPORTS_SUCCESS:{
+            return {
+                ...state,
+                monthExports: action.exportInfo.monthExports,
+                exportPracent: action.exportInfo.percent,
+                branchExports: action.exportInfo.exports,
+                prevMonthExports: action.exportInfo.prevMonthExports,
+                loading: false
+            };
+        };
+
         case actionTypes.GET_WORKERS_SUCCESS:
             return {
                 ...state,
@@ -127,7 +163,6 @@ export const activityReducer = (state = defaultState, action) => {
                     loading: false
                 }
             };
-        
         
             default: return state;
     }

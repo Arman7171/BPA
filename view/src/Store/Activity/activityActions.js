@@ -134,3 +134,64 @@ export const removeProvider = (id) => {
         })
     }
 };
+
+export const getBranchWorkers = (id) => {
+    return (dispatch) => {
+        dispatch({ type: actionTypes.LOADING })
+        dispatch({ type: actionTypes.REMOVING_PROVIDER})
+        request(`/branch/branche-workers/${id}`)
+        .then(res => {
+            console.log('branche-worker--------', res);
+            dispatch({ type: actionTypes.GET_BRANCH_WORKER_SUCCESS, branchWorkers: res.data})
+        })
+        .catch(err => {
+            console.log('err', err.response);
+            dispatch({ type: actionTypes.ERROR, error: err})
+        })
+    }
+};
+
+export const getBranchImports = (id) => {
+    return (dispatch) => {
+        dispatch({ type: actionTypes.LOADING })
+        request(`/branch/branche-imports/${id}`)
+        .then(res => {
+            console.log('branche-import--------', res);
+            dispatch({ type: actionTypes.GET_BRANCH_IMPORTS_SUCCESS, importInfo: res.data})
+        })
+        .catch(err => {
+            console.log('err', err.response);
+            dispatch({ type: actionTypes.ERROR, error: err})
+        })
+    }
+};
+
+export const getBranchExports = (id) => {
+    return (dispatch) => {
+        dispatch({ type: actionTypes.LOADING })
+        request(`/branch/branche-exports/${id}`)
+        .then(res => {
+            console.log('branche-exports--------', res);
+            dispatch({ type: actionTypes.GET_BRANCH_EXPORTS_SUCCESS, exportInfo: res.data})
+        })
+        .catch(err => {
+            console.log('err', err.response);
+            dispatch({ type: actionTypes.ERROR, error: err})
+        })
+    }
+};
+
+export const getBranchProducts = () => {
+    return (dispatch) => {
+        dispatch({ type: actionTypes.LOADING })
+        request(`/branch/branche-products`)
+        .then(res => {
+            console.log('branche-exports--------', res);
+            // dispatch({ type: actionTypes.GET_BRANCH_EXPORTS_SUCCESS, exportInfo: res.data})
+        })
+        .catch(err => {
+            console.log('err', err.response);
+            dispatch({ type: actionTypes.ERROR, error: err})
+        })
+    }
+};

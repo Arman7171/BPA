@@ -14,7 +14,7 @@ const ProductExports = ({addWorkerExport, addingComplate, addImportSuccess}) => 
     const [products, setProducts] = useState([]);
     const [productData, setProductData] = useState([
         {
-            productName: '', QRProduct: '', count: ''  
+            productName: '', QRProduct: '', count: '' , price: '' 
         }
     ]);
 
@@ -30,7 +30,7 @@ const ProductExports = ({addWorkerExport, addingComplate, addImportSuccess}) => 
             setShowInovice(false);
             setProductData([
                 {
-                    productName: '', QRProduct: '', count: ''
+                    productName: '', QRProduct: '', count: '', price: ''
                 }
             ]);
             alert('Ապրանքը հաջողությամբ մուտքագրվեց');
@@ -67,7 +67,7 @@ const ProductExports = ({addWorkerExport, addingComplate, addImportSuccess}) => 
         const newData = [...productData];
         newData.push(
             {
-                productName: '', QRProduct: '', count: '', 
+                productName: '', QRProduct: '', count: '', price: ''
             }
         );
 

@@ -132,6 +132,7 @@ router.post('/import', async (req, res) => {
                     QRproduct: data[i].QRProduct,
                     count: data[i].count,
                     userId: user.id,
+                    branchId: worker.branchId
                 })
             }
             await ProductPlacements.update({workerId:worker.id, status: 1}, {where: {id: data[i].placementId} })
@@ -213,7 +214,8 @@ router.post('/productsExport', async (req, res) => {
             QRproduct: data[i].QRProduct,
             count: data[i].count,
             userId: user.id,
-            workerId: worker.id
+            workerId: worker.id,
+            price: data[i].price
         })
         const BranchProduct = await BranchProducts.findOne({where: {QRproduct: data[i].QRProduct, userId: user.id}, raw: true});
         if(BranchProduct){

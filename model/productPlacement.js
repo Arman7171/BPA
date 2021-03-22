@@ -24,6 +24,10 @@ const ProductPlacement = sequelize.define("productPlacement", {
       type: Sequelize.DOUBLE,
       allowNull: false
     },
+    price: {
+      type: Sequelize.DOUBLE,
+      allowNull: false
+  },
     status: {
       type: Sequelize.BOOLEAN,
       allowNull: false

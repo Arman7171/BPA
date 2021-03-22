@@ -12,6 +12,7 @@ import Providers from './Components/Pages/Providers/Providers';
 import Products from "./Components/Pages/products/Products";
 import ProductImports from './Components/Pages/products/ProductImports'; 
 import ProductExports from './Components/Pages/products/ProductExports'; 
+import BranchInfo from './Components/Pages/Branches/BranchInfo';
 
 export const Routes = (isAuthenticated) => {
 
@@ -24,6 +25,7 @@ export const Routes = (isAuthenticated) => {
                 <Route path='/branches' component={Branches} />
                 <Route path='/workers' component={Workers} />
                 <Route path='/profile/:id' component={Profile} />
+                <Route path='/branchInfo/:id' component={BranchInfo} />
                 <Route path='/providers' component={Providers} />
                 <Route path='/products' component={Products} />
                 <Route path='/productImports' component={ProductImports} />

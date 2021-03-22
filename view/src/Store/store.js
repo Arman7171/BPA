@@ -6,7 +6,8 @@ import { authReducer } from './Auth/authReducer';
 import { productReducer } from "./Products/productReducer";
 
 
-const middlewares = applyMiddleware(thunk, logger);
+// const middlewares = applyMiddleware(thunk, logger);
+const middlewares = applyMiddleware(thunk);
 
 const mainReducer = combineReducers({
     activityReducer,

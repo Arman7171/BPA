@@ -42,7 +42,7 @@ const Header = ({getUserInfo, name, lastName}) => {
                 <div className="dropdown d-inline-block">
                     <button type="button" className="btn header-item waves-effect" id="page-header-user-dropdown"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img className="rounded-circle header-profile-user" src="/assets/images/users/avatar-4.jpg"
+                        <img className="rounded-circle header-profile-user" src="/assets/images/users/avatar-6.jpg"
                             alt="Header Avatar" />
                         <span className="text-white d-xl-inline-block ml-1 font-weight-medium font-size-15"> {name} {lastName} </span>
                         <i className="uil-angle-down d-none d-xl-inline-block font-size-15"></i>

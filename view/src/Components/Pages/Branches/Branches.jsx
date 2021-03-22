@@ -121,7 +121,7 @@ const Branches = (props) => {
                                                                     </div>
                                                                 </th>
                                                                 <td>
-                                                                    <Link to="#" className="text-body"> {branch.branchName} </Link>
+                                                                    <Link to={`branchInfo/${branch.id}`} className="text-body"> {branch.branchName} </Link>
                                                                 </td>
                                                                 <td> {branch.addres} </td>
                                                                 <td> {branch.vat} </td>
