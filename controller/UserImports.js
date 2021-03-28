@@ -5,6 +5,7 @@ const Workers = require('../model/worker');
 const ProductPlacement = require('../model/productPlacement');
 const Products = require('../model/products');
 const Users = require('../model/users');
+const WorkerExports = require('../model/WorkerExports');
 const jwt = require('jsonwebtoken');
 
 router.post('/add-products', async (req, res) => {
@@ -96,30 +97,7 @@ router.get('/mybranch-products', async (req, res) => {
     catch{
         res.status(500).json({ message: 'server error try again' });
     }
-})
-
-// router.get('/product-info/:id', async (req, res) => {
-//     try{
-//         console.log('mtav ste', req.params);
-//         const token = req.headers['authorization'].replace('Bearer ','');
-//         info = jwt.verify(token, 'jwtSecret');
-//         console.log('info', info);
-//         const worker = await Workers.findOne({where: {id: info.userId}});
-//         console.log('worker', worker.dataValues);
-//         const product = await Products.findOne(
-//             {
-//                 where: {
-//                     id: req.params.id
-//                 }
-//             }
-//         )
-//         console.log('Product', product.dataValues);
-//         res.status(200).json(product)
-//     }
-//     catch{
-//         res.status(500).json({ message: 'server error try again' });
-//     }
-// })
+});
 
 router.get('/my-products', async (req, res) => {
     try{
@@ -187,8 +165,76 @@ router.get('/product-count', async (req, res) => {
     catch{
         res.status(500).json({ message: 'server error try again' });
     }
-})
+});
 
+router.get('/user-imports', async (req, res) => {
+    try{
+        const token = req.headers['authorization'].replace('Bearer ','');
+        info = jwt.verify(token, 'jwtSecret');
+        const month = req.query.month;
+        const year = req.query.year;
+        let monthImports = [];
+        console.log('month, year------', month, year);
+        const user = await Users.findOne({where: {id: info.userId}, raw: true});
+            const userImports = await UserImports.findAll(
+                {
+                    where: {userId: user.id}, 
+                });
+        for(let i=0; i<userImports.length; i++){
+            if(userImports[i].createdAt.getMonth()==month && userImports[i].createdAt.getFullYear()==year){
+                monthImports.push(userImports[i]);
+            }
+        }
+            res.status(200).json(monthImports);
+        }
+    catch{
+        res.status(500).json({ message: 'server error try again' });
+    }
+});
 
+router.get('/user-income', async (req, res) => {
+    try{
+        const token = req.headers['authorization'].replace('Bearer ','');
+        info = jwt.verify(token, 'jwtSecret');
+        const month = req.query.month;
+        const year = req.query.year;
+        let imports = [];
+        let exports = [];
+        let importsVal = 0;
+        let lastImports = 0;
+        let exportsVal = 0;
+        let lastExports = 0;
+        console.log('month, year------', month, year);
+        const user = await Users.findOne({where: {id: info.userId}, raw: true});
+        const userImports = await UserImports.findAll({where: {userId: user.id}});
+        const Allexports = await WorkerExports.findAll({where:{userId:  user.id}, raw: true });
+
+        for(let i=0; i<userImports.length; i++){
+            if(userImports[i].createdAt.getMonth()==month && userImports[i].createdAt.getFullYear()==year){
+                importsVal += userImports[i].count*userImports[i].price;
+                imports.push(userImports[i]);
+            }
+            else if(userImports[i].createdAt.getMonth()==month-1 && userImports[i].createdAt.getFullYear()==year){
+                lastImports += userImports[i].count*userImports[i].price;
+            }
+        }
+
+        for(let i=0; i<Allexports.length; i++){
+            if(Allexports[i].createdAt.getMonth()==month && Allexports[i].createdAt.getFullYear()==year){
+                exportsVal += Allexports[i].count*Allexports[i].price;
+                exports.push(Allexports[i]);
+            }
+            else if(Allexports[i].createdAt.getMonth()==month-1 && Allexports[i].createdAt.getFullYear()==year){
+                lastExports += Allexports[i].count*Allexports[i].price;
+            }
+        }
+        console.log('lastExports-lastImports-----------------------------', exportsVal-importsVal, lastExports-lastImports);
+        let pracent = Math.abs((((exportsVal-importsVal) - (lastExports-lastImports))/(exportsVal-importsVal))*100);
+            res.status(200).json({income: exportsVal-importsVal, lastIncome: lastExports-lastImports, imports, exports, pracent});
+        }
+    catch{
+        res.status(500).json({ message: 'server error try again' });
+    }
+});
 
 module.exports = router;

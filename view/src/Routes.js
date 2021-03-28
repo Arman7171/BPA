@@ -13,6 +13,8 @@ import Products from "./Components/Pages/products/Products";
 import ProductImports from './Components/Pages/products/ProductImports'; 
 import ProductExports from './Components/Pages/products/ProductExports'; 
 import BranchInfo from './Components/Pages/Branches/BranchInfo';
+import UserImports from "./Components/Pages/userActions/UserImports";
+import Exports from './Components/Pages/userActions/Exports';
 
 export const Routes = (isAuthenticated) => {
 
@@ -28,6 +30,8 @@ export const Routes = (isAuthenticated) => {
                 <Route path='/branchInfo/:id' component={BranchInfo} />
                 <Route path='/providers' component={Providers} />
                 <Route path='/products' component={Products} />
+                <Route path='/user-imports' component={UserImports} />
+                <Route path='/exports' component={Exports} />
                 <Route path='/productImports' component={ProductImports} />
                 <Route path='/productExports' component={ProductExports} />
                 <Redirect to='/not-found' />

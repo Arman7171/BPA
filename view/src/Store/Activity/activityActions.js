@@ -181,17 +181,61 @@ export const getBranchExports = (id) => {
     }
 };
 
-export const getBranchProducts = () => {
+export const getBranchProducts = (limit, offset, id) => {
     return (dispatch) => {
         dispatch({ type: actionTypes.LOADING })
-        request(`/branch/branche-products`)
+        request(`/branch/branche-products/?limit=${limit}&offset=${offset}&branchId=${id}`)
         .then(res => {
-            console.log('branche-exports--------', res);
-            // dispatch({ type: actionTypes.GET_BRANCH_EXPORTS_SUCCESS, exportInfo: res.data})
+            console.log('branche-products--------', res);
+            dispatch({ type: actionTypes.GET_BRANCH_PRODUCTS_SUCCESS, products: res.data})
         })
         .catch(err => {
             console.log('err', err.response);
             dispatch({ type: actionTypes.ERROR, error: err})
+        })
+    }
+};
+
+export const getUserImports = (month, year) => {
+    return (dispatch) => {
+        dispatch({ type: actionTypes.LOADING })
+
+        request(`/product/user-imports/?month=${month}&year=${year}`, 'get')
+        .then(res => {
+            dispatch({ type: actionTypes.GET_USER_IMPORTS_SUCCESS, imports: res.data})
+        })
+        .catch(err => {
+            dispatch({ type: actionTypes.ERROR, error: err.message})
+        })
+    }
+};
+
+export const getExports = (month, year) => {
+    return (dispatch) => {
+        dispatch({ type: actionTypes.LOADING })
+
+        request(`/worker/exports/?month=${month}&year=${year}`, 'get')
+        .then(res => {
+            console.log('exports', res.data);
+            dispatch({ type: actionTypes.GET_EXPORT_SUCCESS, exports: res.data})
+        })
+        .catch(err => {
+            dispatch({ type: actionTypes.ERROR, error: err.message})
+        })
+    }
+};
+
+export const getIncome = (month, year) => {
+    return (dispatch) => {
+        dispatch({ type: actionTypes.LOADING })
+
+        request(`/product/user-income/?month=${2}&year=${2021}`, 'get')
+        .then(res => {
+            console.log('income----------', res.data);
+            dispatch({ type: actionTypes.GET_INCOME_SUCCESS, obj: res.data})
+        })
+        .catch(err => {
+            dispatch({ type: actionTypes.ERROR, error: err.message})
         })
     }
 };

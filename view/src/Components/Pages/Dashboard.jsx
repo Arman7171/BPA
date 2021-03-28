@@ -1,17 +1,62 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
-import { getBranches, getProviders, getWorkers } from "../../Store/Activity/activityActions";
+import { getBranches, getProviders, getWorkers, getIncome, getUserImports, getExports } from "../../Store/Activity/activityActions";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import Chart from "../Chart";
 
-const Home = ({getBranches, getProviders, getWorkers, providers, workers, branches}) => {
+const Home = ({getBranches, getProviders, getIncome, getUserImports, getExports, exports, userImports, getWorkers,income, providers, workers, incomePracent, branches}) => {
 
     const [type, ] = useState(localStorage.getItem('type'));
+    const [importData, setImportData] = useState([]);
+    const [importLable, setImportLable] = useState([]);
+    const [exportData, setExportData] = useState([]);
+    const [exportLable, setExportLable] = useState([]);
 
     useEffect(() => {
         getBranches();
         getProviders();
         getWorkers();
+        getIncome();
+        getUserImports(new Date().getMonth(), new Date().getFullYear());
+        getExports(new Date().getMonth(), new Date().getFullYear());
     }, []);
+
+    useEffect(() => {
+        if (userImports.length > 0) {
+            let chartData = [];
+            let lable = [];
+            for (let i = 0; i < userImports.length; i++) {
+                chartData.push(userImports[i].total);
+                lable.push(new Date(userImports[i].updatedAt).toLocaleDateString());
+            }
+            setImportData(chartData);
+            setImportLable(lable);
+        }
+        else{
+            setImportData([]);
+            setImportLable([]);
+        }
+    }, [userImports]);
+
+    useEffect(() => {
+        if (exports.length > 0) {
+            let chartData = [];
+            let lable = [];
+            for (let i = 0; i < exports.length; i++) {
+                chartData.push(exports[i].price*exports[i].count);
+                lable.push(new Date(exports[i].updatedAt).toLocaleDateString());
+            }
+            setExportData(chartData);
+            setExportLable(lable);
+        }
+        else{
+            setExportLable([]);
+            setExportData([]);
+        }
+    }, [exports]);
+
     return (
         <div className="main-content">
             <div className="page-content">
@@ -34,9 +79,9 @@ const Home = ({getBranches, getProviders, getWorkers, providers, workers, branch
                     {
                         type === 'manager' ? null :
 
-                    <div className="row">
+                    <div className="row mb-3">
                             <div className="col-md-6 col-xl-3">
-                                <div className="card">
+                                <div className="card h-100">
                                     <div className="card-body">
                                         <div className="float-right mt-2">
                                             <div id="total-revenue-chart"></div>
@@ -45,14 +90,12 @@ const Home = ({getBranches, getProviders, getWorkers, providers, workers, branch
                                             <h4 className="mb-1 mt-1"><span data-plugin="counterup"> {branches.length} </span></h4>
                                             <p className="text-muted mb-0">Մասնաճյուղեր</p>
                                         </div>
-                                        <p className="text-muted mt-3 mb-0"><span className="text-success mr-1"><i className="mdi mdi-arrow-up-bold ml-1"></i>2.65%</span> since last week
-                                        </p>
                                     </div>
                                 </div>
                             </div> 
 
                             <div className="col-md-6 col-xl-3">
-                                <div className="card">
+                                <div className="card h-100">
                                     <div className="card-body">
                                         <div className="float-right mt-2">
                                             <div id="orders-chart"> </div>
@@ -61,14 +104,12 @@ const Home = ({getBranches, getProviders, getWorkers, providers, workers, branch
                                             <h4 className="mb-1 mt-1"><span data-plugin="counterup"> {workers.length} </span></h4>
                                             <p className="text-muted mb-0">Աշխատակիցներ</p>
                                         </div>
-                                        <p className="text-muted mt-3 mb-0"><span className="text-danger mr-1"><i className="mdi mdi-arrow-down-bold ml-1"></i>0.82%</span> since last week
-                                        </p>
                                     </div>
                                 </div>
                             </div> 
 
                             <div className="col-md-6 col-xl-3">
-                                <div className="card">
+                                <div className="card h-100">
                                     <div className="card-body">
                                         <div className="float-right mt-2">
                                             <div id="customers-chart"> </div>
@@ -77,24 +118,23 @@ const Home = ({getBranches, getProviders, getWorkers, providers, workers, branch
                                             <h4 className="mb-1 mt-1"><span data-plugin="counterup"> {providers.length} </span></h4>
                                             <p className="text-muted mb-0">Մատակարարներ</p>
                                         </div>
-                                        <p className="text-muted mt-3 mb-0"><span className="text-danger mr-1"><i className="mdi mdi-arrow-down-bold ml-1"></i>6.24%</span> since last week
-                                        </p>
                                     </div>
                                 </div>
                             </div> 
 
                             <div className="col-md-6 col-xl-3">
 
-                                <div className="card">
+                                <div className="card h-100">
                                     <div className="card-body">
                                         <div className="float-right mt-2">
                                             <div id="growth-chart"></div>
                                         </div>
                                         <div>
-                                            <h4 className="mb-1 mt-1">+ <span data-plugin="counterup">12.58</span>%</h4>
-                                            <p className="text-muted mb-0">Growth</p>
+                                            <p className="text-muted mb-0">Վերջի ամսվա Եկամուտը</p>
+                                            <h4 className="mb-1 mt-1"><span data-plugin="counterup">{income}</span> ֏</h4>
                                         </div>
-                                        <p className="text-muted mt-3 mb-0"><span className="text-success mr-1"><i className="mdi mdi-arrow-up-bold ml-1"></i>10.51%</span> since last week
+                                        <p className="text-muted mt-3 mb-0"><span className={`${incomePracent < 0 ? 'text-danger' : 'text-success'} mr-1`}>
+                                            <FontAwesomeIcon icon={incomePracent < 0 ? faArrowDown : faArrowUp} className='mr-1' />{incomePracent?.toFixed(2)}%</span> Աճը նախորդ ամսվա համեմատ
                                         </p>
                                     </div>
                                 </div>
@@ -105,23 +145,6 @@ const Home = ({getBranches, getProviders, getWorkers, providers, workers, branch
                             <div className="col-xl-8">
                                 <div className="card">
                                     <div className="card-body">
-                                        <div className="float-right">
-                                            <div className="dropdown">
-                                                <Link className="dropdown-toggle text-reset" to="#" id="dropdownMenuButton5"
-                                                    data-toggle="dropdown" aria-haspopup="true"
-                                                    aria-expanded="false">
-                                                    <span className="font-weight-semibold">Sort By:</span> <span className="text-muted">Yearly<i className="mdi mdi-chevron-down ml-1"></i></span>
-                                                </Link>
-
-                                                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton5">
-                                                    <Link className="dropdown-item" to="#">Monthly</Link>
-                                                    <Link className="dropdown-item" to="#">Yearly</Link>
-                                                    <Link className="dropdown-item" to="#">Weekly</Link>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <h4 className="card-title mb-4">Sales Analytics</h4>
-
                                         <div className="mt-1">
                                             <ul className="list-inline main-chart mb-0">
                                                 <li className="list-inline-item chart-border-left mr-0 border-0">
@@ -138,7 +161,20 @@ const Home = ({getBranches, getProviders, getWorkers, providers, workers, branch
                                         </div>
 
                                         <div className="mt-3">
-                                            <div id="sales-analytics-chart" className="apex-charts" dir="ltr"></div>
+                                        <h6 className="ml-5 my-4">Վերջին ամսվա մուտքեր</h6>
+                                        <Chart
+                                            data={importData}
+                                            lables={importLable}
+                                            lable="Մուտք ( ֏ )"
+                                            borderColor="rgba(255,99,132,1)"
+                                        />
+                                        <h6 className="ml-5 my-4">Վերջին ամսվա ելքեր</h6>
+                                        <Chart
+                                            data={exportData}
+                                            lables={exportLable}
+                                            lable="Ելք ( ֏ )"
+                                            borderColor="rgba(255,99,132,1)"
+                                        />
                                         </div>
                                     </div>
                                 </div>
@@ -149,9 +185,9 @@ const Home = ({getBranches, getProviders, getWorkers, providers, workers, branch
                                     <div className="card-body">
                                         <div className="row align-items-center">
                                             <div className="col-sm-8">
-                                                <p className="text-white font-size-18">Enhance your <b>Campaign</b> for better outreach <i className="mdi mdi-arrow-right"></i></p>
+                                                <p className="text-white font-size-18">Մասնաճյուղերի վերաբերյալ ավելի մանրամսն իմֆորմացիա կարող եք տեսնել այստեղ</p>
                                                 <div className="mt-4">
-                                                    <Link to="" className="btn btn-success waves-effect waves-light">Upgrade Account!</Link>
+                                                    <Link to="/branches" className="btn btn-success waves-effect waves-light">Տեսնել ավելին</Link>
                                                 </div>
                                             </div>
                                             <div className="col-sm-4">
@@ -270,6 +306,10 @@ const mapStateToProps = (state) => {
         workers: state.activityReducer.workers,
         branches: state.activityReducer.branches,
         providers: state.activityReducer.providers,
+        income: state.activityReducer.income,
+        incomePracent: state.activityReducer.incomePracent,
+        userImports: state.activityReducer.userImports,
+        exports: state.activityReducer.exports
     }
 };
 
@@ -277,6 +317,9 @@ const mapDispatchToProps = {
     getBranches,
     getWorkers,
     getProviders,
+    getIncome,
+    getUserImports,
+    getExports
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

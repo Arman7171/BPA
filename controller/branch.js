@@ -3,7 +3,7 @@ const router = Router();
 const Branches = require('../model/branch');
 const Workers = require('../model/worker');
 const ProductPlacements = require('../model/productPlacement');
-const Products = require('../model/products');
+const Users = require('../model/users');
 const WorkerExports = require('../model/WorkerExports');
 const branchMiddle = require('../middleware/branch');
 const jwt = require('jsonwebtoken');
@@ -148,28 +148,17 @@ router.get('/branche-exports/:id',
 
 router.get('/branche-products',
         async (req, res) => {
-            console.log('mtav------=========', req.params.id);
             try{
                 const token = req.headers['authorization'].replace('Bearer ','');
                 info = jwt.verify(token, 'jwtSecret');
-                console.log('info', info.userId);
-                console.log('params--------------', req.query.limit);
+                console.log('info products', info.userId);
+                console.log('params--------------', req.query);
                 const user = await Users.findOne({where: {id: info.userId}, raw: true});
-                console.log('user-=--=-=-=-=-=', user);
-                    if(req.query.limit){
+                console.log('user products-=--=-=-=-=-=', user);
                         var allProducts = await BranchProducts.findAll(
                             {
-                                where: {userId: user.id}, 
-                                limit: +req.query.limit,
-                                offset: +req.query.offset
+                                where: {userId: user.id, branchId: req.query.branchId}, 
                             });
-                    }
-                    else{
-                        var allProducts = await BranchProducts.findAll(
-                            {
-                                where: {userId: user.id}, 
-                            });
-                    }
         
                     res.status(200).json(allProducts);
             }

@@ -5,6 +5,7 @@ export const defaultState = {
     workers: [],
     providers: [],
     branchWorkers: [],
+    branchProducts: [],
     loading: false,
     errorMessage: '',
     monthImports: 0,
@@ -20,6 +21,10 @@ export const defaultState = {
     removeWorkerSuccess: false,
     addProviderSuccess: false,
     removeProviderSuccess: false,
+    userImports: [],
+    exports: [],
+    income: 0,
+    incomePracent: 0
 };
 
 
@@ -29,6 +34,9 @@ export const activityReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 errorMessage: '',
+                branchImports: [],
+                branchExports: [],
+                branchProducts: [],
                 loading: true
             };
         case actionTypes.ERROR: 
@@ -95,6 +103,12 @@ export const activityReducer = (state = defaultState, action) => {
                 loading: false
             };
         };
+        case actionTypes.GET_BRANCH_PRODUCTS_SUCCESS:
+            return {
+                ...state,
+                branchProducts: state.branchProducts.concat(action.products),
+                loading: false
+            }; 
 
         case actionTypes.GET_WORKERS_SUCCESS:
             return {
@@ -164,6 +178,29 @@ export const activityReducer = (state = defaultState, action) => {
                 }
             };
         
-            default: return state;
+        case actionTypes.GET_USER_IMPORTS_SUCCESS:{
+            return{
+                ...state,
+                userImports: action.imports,
+                loading: false
+            }
+        };
+        case actionTypes.GET_EXPORT_SUCCESS:{
+            return{
+                ...state,
+                exports: action.exports,
+                loading: false
+            }
+        };
+        case actionTypes.GET_INCOME_SUCCESS:{
+            return{
+                ...state,
+                income: action.obj.income,
+                incomePracent: action.obj.income>action.obj.lastIncome ? action.obj.pracent : -action.obj.pracent,
+                loading: false
+            }
+        };
+
+        default: return state;
     }
 };

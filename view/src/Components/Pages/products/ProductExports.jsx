@@ -80,7 +80,7 @@ const ProductExports = ({addWorkerExport, addingComplate, addImportSuccess}) => 
         data[dataIndex].productName = products[index].productName;
         data[dataIndex].QRProduct = products[index].QRproduct;
         data[dataIndex].unit = products[index].unit;
-        data[dataIndex].price = products[index].price;
+        data[dataIndex].price = products[index].saleprice;
         setProductData(data);
     };
 

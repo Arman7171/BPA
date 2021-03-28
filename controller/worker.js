@@ -66,7 +66,7 @@ router.get('/my-workers',
             res.status(500).json({ message: 'server error try again' });
         }
     }
-)
+);
 
 router.delete('/delete/:id', 
 async (req, res) => {
@@ -309,6 +309,32 @@ router.get('/worker-lastExport/:id', async (req, res) => {
         res.status(500).json({ message: 'server error try again' });
     }
 });
+
+router.get('/exports', async (req, res) => {
+    try{
+        const token = req.headers['authorization'].replace('Bearer ','');
+        info = jwt.verify(token, 'jwtSecret');
+        const month = req.query.month;
+        const year = req.query.year;
+        let monthExports = [];
+        console.log('month, year------', month, year);
+        const user = await Users.findOne({where: {id: info.userId}, raw: true});
+            const workerExports = await WorkerExports.findAll(
+                {
+                    where: {userId: user.id}, 
+                });
+        for(let i=0; i<workerExports.length; i++){
+            if(workerExports[i].createdAt.getMonth()==month && workerExports[i].createdAt.getFullYear()==year){
+                monthExports.push(workerExports[i]);
+            }
+        }
+            res.status(200).json(monthExports);
+        }
+    catch{
+        res.status(500).json({ message: 'server error try again' });
+    }
+});
+
 
 
 module.exports = router;

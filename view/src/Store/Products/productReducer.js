@@ -19,7 +19,8 @@ export const productReducer = (state = defaultState, action) => {
                 loading: true,
                 errorMessage: '',
                 addImportSuccess: true,
-                addingComplate: false
+                addingComplate: false,
+                products: []
             };
         case actionTypes.ERROR: 
             return {

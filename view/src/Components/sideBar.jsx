@@ -81,8 +81,8 @@ const SideBar = ({ userType }) => {
                             </Link>
                         </li>
                         <li>
-                            <Link to='/productExports'>
-                                <FontAwesomeIcon className='mr-2' icon={faFileExport} />
+                            <Link to={!userType ? '/exports' : '/productExports'}>
+                                <FontAwesomeIcon className='ml-1' icon={faFileExport} />
                                 <span className='sidebar-items'>Ելքեր</span>
                             </Link>
                         </li>

@@ -195,7 +195,11 @@ const ProductImports = ({providers, addWorkerImport, branches, getBranches, getP
                             </div>
                         </div>
                     </div>
-
+                    <div className="card-body mb-3">
+                        <div className="text-right">
+                            <Link to="/user-imports">Տեսնել բոլոր մուտքերը</Link>
+                        </div>
+                    </div>
                     <div className="card">
                         <div className="card-body">
                             {
