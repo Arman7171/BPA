@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faCodeBranch, faUsers, faFileImport, faFileExport, faUserFriends, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faCodeBranch, faUsers, faFileImport, faFileExport, faWarehouse ,faUserFriends, faShoppingCart, faChartArea } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 
 const SideBar = ({ userType }) => {
@@ -86,6 +86,26 @@ const SideBar = ({ userType }) => {
                                 <span className='sidebar-items'>Ելքեր</span>
                             </Link>
                         </li>
+                        {
+                            !userType ? 
+                            <li>
+                            <Link to={'/store'}>
+                                <FontAwesomeIcon className='mr-2' icon={faWarehouse} />
+                                <span className='sidebar-items'>Պահեստ</span>
+                            </Link>
+                        </li>
+                        : null
+                        }
+                       {
+                            !userType ? 
+                            <li>
+                            <Link to={'/analytics'}>
+                                <FontAwesomeIcon className='ml-1 mr-2' icon={faChartArea} />
+                                <span className='sidebar-items'>Վիճակագրություն</span>
+                            </Link>
+                        </li>
+                        : null
+                        }
                     </ul>
                 </div>
             </div>

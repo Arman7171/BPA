@@ -24,7 +24,11 @@ export const defaultState = {
     userImports: [],
     exports: [],
     income: 0,
-    incomePracent: 0
+    incomePracent: 0,
+    sallingPrcent: [],
+    sallingProduct: [],
+    importsChartData: [],
+    exportsChartData: []
 };
 
 
@@ -196,11 +200,29 @@ export const activityReducer = (state = defaultState, action) => {
             return{
                 ...state,
                 income: action.obj.income,
-                incomePracent: action.obj.income>action.obj.lastIncome ? action.obj.pracent : -action.obj.pracent,
+                incomePracent: action.obj.income>action.obj.lastIncome ? action.obj.prcent : -action.obj.prcent,
+                importsChartData: action.obj.importsChartData,
+                exportsChartData: action.obj.exportsChartData,
                 loading: false
             }
         };
 
+        case actionTypes.GET_PRODUCTS_SELLS_PRCENT:{
+            return{
+                ...state,
+                sallingPrcent: action.obj,
+                loading: false
+            }
+        };
+        case actionTypes.GET_SELLING_PRODUCTS:{
+            return{
+                ...state,
+                sallingProduct: action.obj.monthProductsSell,
+                sallingPrcent: action.obj.sellPracent,
+                loading: false
+            }
+        };
+        
         default: return state;
     }
 };

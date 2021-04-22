@@ -106,20 +106,20 @@ const ProductImports = ({providers, addWorkerImport, branches, getBranches, getP
         console.log(productData);
         if(type !== 'manager'){
         for(let i=0; i<productData.length; i++){
-            let count = 0;
+            // let count = 0;
             if(productData[i].productPlacement.length===0){
                 alert('Ապրանքի տեղաբաշխումը բացակայում է');
                 return;
             }
-            for(let j in productData[i].productPlacement){
-                console.log(productData[i].productPlacement[j].productCount);
-                count+=+productData[i].productPlacement[j].productCount
-            }
-            if(productData[i].count != count){
-                console.log(productData[i].count, count);
-                alert('Տեղաբաշխման տվյալները չեն համապատասխանում մուտքագրվածին');
-                return;
-            }
+            // for(let j in productData[i].productPlacement){
+            //     console.log(productData[i].productPlacement[j].productCount);
+            //     count+=+productData[i].productPlacement[j].productCount
+            // }
+            // if(productData[i].count != count){
+            //     console.log(productData[i].count, count);
+            //     alert('Տեղաբաշխման տվյալները չեն համապատասխանում մուտքագրվածին');
+            //     return;
+            // }
         }
         }
         setShowInovice(!showInovice);

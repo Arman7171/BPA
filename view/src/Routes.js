@@ -15,6 +15,9 @@ import ProductExports from './Components/Pages/products/ProductExports';
 import BranchInfo from './Components/Pages/Branches/BranchInfo';
 import UserImports from "./Components/Pages/userActions/UserImports";
 import Exports from './Components/Pages/userActions/Exports';
+import ProductsSelling from "./Components/Pages/products/ProductsSelling";
+import Store from "./Components/Pages/products/Store";
+import Analytics from './Components/Pages/Analytics.jsx';
 
 export const Routes = (isAuthenticated) => {
 
@@ -34,6 +37,9 @@ export const Routes = (isAuthenticated) => {
                 <Route path='/exports' component={Exports} />
                 <Route path='/productImports' component={ProductImports} />
                 <Route path='/productExports' component={ProductExports} />
+                <Route path='/ProductsSelling' component={ProductsSelling} />
+                <Route path='/store' component={Store} />
+                <Route path='/analytics' component={Analytics} />
                 <Redirect to='/not-found' />
             </Switch>
         );

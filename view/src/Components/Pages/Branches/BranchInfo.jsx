@@ -13,13 +13,15 @@ const BranchInfo = ({ branchWorkers, branchImports, getBranchProducts, branchPro
     const [importLable, setImportLable] = useState([]);
     const [exportData, setExportData] = useState([]);
     const [exportLable, setExportLable] = useState([]);
+    const [month, setMonth] = useState(new Date().getMonth());
+    const [year, ] = useState(new Date().getFullYear());
     const [limit, ] = useState(8);
     const [offset, ] = useState(0);
 
     useEffect(() => {
         getBranchWorkers(id);
-        getBranchImports(id);
-        getBranchExports(id);
+        getBranchImports(id, month, year);
+        getBranchExports(id, month, year);
         getBranchProducts(limit, offset, id);
     }, []);
 
@@ -36,6 +38,10 @@ const BranchInfo = ({ branchWorkers, branchImports, getBranchProducts, branchPro
             setImportData(chartData);
             setImportLable(lable);
         }
+        else{
+            setImportData([]);
+            setImportLable([]);
+        }
     }, [branchImports]);
 
     useEffect(() => {
@@ -51,6 +57,10 @@ const BranchInfo = ({ branchWorkers, branchImports, getBranchProducts, branchPro
             setExportData(chartData);
             setExportLable(lable);
         }
+        else{
+            setExportData([]);
+            setExportLable([]);
+        }
     }, [branchExports]);
 
     const getAllPracent = (dif) => {
@@ -59,6 +69,21 @@ const BranchInfo = ({ branchWorkers, branchImports, getBranchProducts, branchPro
         let pracent = ((dif - prevDif) / Math.abs(dif)) * 100;
         // console.log(pracent);
         return pracent;
+    };
+
+    const getMonths = () => {
+        let Months = [];
+        let monthValues = ['Հունվար', 'Փետրվար', 'Մարտ', 'Ապրիլ', 'Մայիս', 'Հունիս', 'Հուլիս', 'Օգոստոս', 'Սեպտեմբեր', 'Հոտեմբեր', 'Նոյեմբեր', 'Դեկտեմբեր']
+        for(let i=1; i<=12; i++){
+            Months.push(<option key={i} value={i-1}>{monthValues[i-1]}</option>)
+        }
+        return Months;
+    };
+
+    const checkMonth = (val) =>{
+        setMonth(val);
+        getBranchExports(id, val, year);
+        getBranchImports(id, val, year);
     };
 
     return (
@@ -70,7 +95,14 @@ const BranchInfo = ({ branchWorkers, branchImports, getBranchProducts, branchPro
                             <div className="col-12">
                                 <div className="page-title-box d-flex align-items-center justify-content-between">
                                     <h4 className="mb-0">Մասնաճյուղի տվյալները</h4>
-
+                                    <div className='d-flex justify-content-between w-25'>
+                                        <select name="" id="name" defaultValue={month} className='form-control mr-2' onChange={(e) => checkMonth(e.target.value)}>
+                                                {getMonths()}
+                                        </select>
+                                        <select defaultValue={year} name="" id="name" className='form-control'>
+                                            <option value={2021}>2021</option>
+                                        </select>
+                                    </div>
                                     <div className="page-title-right">
                                         <ol className="breadcrumb m-0">
                                             <li className="breadcrumb-item"><Link to="">BPA</Link></li>

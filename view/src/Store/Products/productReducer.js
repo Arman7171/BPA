@@ -66,6 +66,13 @@ export const productReducer = (state = defaultState, action) => {
                 loading: false,
                 products: state.products.concat(action.products)
             };
+        case actionTypes.GET_STORE_PRODUCTS_SUCCESS:
+            return{
+                ...state,
+                loading: false,
+                products: state.products.concat(action.products.allProducts),
+                productCount: action.products.productCount
+            };
             default: return state;
     }
 };

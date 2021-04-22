@@ -116,15 +116,15 @@ router.post('/import', async (req, res) => {
     const branch = await Branches.findOne({where:{id: worker.branchId}, raw: true });
     
     for(i in data){
-        const ProductPlacement = await ProductPlacements.findOne({where: {id: data[i].placementId}, raw: true});
+        const ProductPlacement = await ProductPlacements.findOne({where: {id: data[i].placementId}, raw: true})
         if(ProductPlacement.productCount == data[i].count){
             console.log('ProductPlacement--------', data[i].QRProduct);
-            const BranchProduct = await BranchProducts.findOne({where: {QRproduct: data[i].QRProduct}, raw: true});
+            const BranchProduct = await BranchProducts.findOne({where: {QRproduct: data[i].QRProduct, branchId: worker.branchId}, raw: true});
             console.log('BranchProduct-----', BranchProduct);
             if(BranchProduct){
                 let prevCount = +BranchProduct.count;
                 let newCount = prevCount + +data[i].count;
-                await BranchProducts.update({count: newCount}, {where: {QRproduct: data[i].QRProduct} });
+                await BranchProducts.update({count: newCount}, {where: {QRproduct: data[i].QRProduct, branchId: worker.branchId} });
             }
             else{
                 BranchProducts.create({
@@ -180,7 +180,7 @@ router.post('/import', async (req, res) => {
                         Ապրանքի QR-ը: ${ProductPlacement.QRproduct},
                         <br>
                         <br>
-                        Ապրանքի սպասող Քանակը: <span style="color: green">${ProductPlacement.productCount}</span>,
+                        Ապրանքի սպասվող Քանակը: <span style="color: green">${ProductPlacement.productCount}</span>,
                         <br>
                         <br>
                         Ապրանքի մուտքագրված Քանակը: <span style="color: red">${data[i].count}</span>,
@@ -194,7 +194,7 @@ router.post('/import', async (req, res) => {
                       `
               }
               mailer(message)
-              res.status(400).json({message: 'product error'});
+              res.status(200).json({message: 'product added'});
         }
     }
 
@@ -215,24 +215,30 @@ router.post('/productsExport', async (req, res) => {
             count: data[i].count,
             userId: user.id,
             workerId: worker.id,
+            branchId: worker.branchId,
             price: data[i].price
         })
-        const BranchProduct = await BranchProducts.findOne({where: {QRproduct: data[i].QRProduct, userId: user.id}, raw: true});
-        if(BranchProduct){
-            let prevCount = +BranchProduct.count;
-            let newCount = prevCount - +data[i].count;
-            await BranchProducts.update({count: newCount}, {where: {QRproduct: data[i].QRProduct, userId: user.id} });
-        }
-        const Product = await Products.findOne({where: {QRproduct: data[i].QRProduct, userId: user.id}, raw: true});
-        if(Product){
-            prevCount = +Product.count;
-            newCount = prevCount - +data[i].count;
-            await Products.update({count: newCount}, {where: {QRproduct: data[i].QRProduct, userId: user.id} });
-        }
-        else{
-            res.status(400).json({message: 'product exported'});
-        }
-        res.status(200).json({message: 'product exported'});
+        .then(async() => {
+            const BranchProduct = await BranchProducts.findOne({where: {QRproduct: data[i].QRProduct, userId: user.id}, raw: true});
+            if(BranchProduct){
+                let prevCount = +BranchProduct.count;
+                let newCount = prevCount - +data[i].count;
+                await BranchProducts.update({count: newCount}, {where: {QRproduct: data[i].QRProduct, userId: user.id} });
+            }
+            const Product = await Products.findOne({where: {QRproduct: data[i].QRProduct, userId: user.id}, raw: true});
+            if(Product){
+                prevCount = +Product.count;
+                newCount = prevCount - +data[i].count;
+                await Products.update({count: newCount}, {where: {QRproduct: data[i].QRProduct, userId: user.id} });
+            }
+            else{
+                res.status(400).json({message: 'product exported'});
+            }
+            res.status(200).json({message: 'product exported'});
+        })
+       .catch(() => {
+
+       });
     }
 }
     catch (e){

@@ -75,3 +75,29 @@ export const getUserProducts = (limit, offset) => {
         })
     }
 };
+
+export const getStoreProducts = (limit, offset) => {
+    return (dispatch) => {
+        dispatch({ type: actionTypes.PRODUCT_LOADING });
+        request(`/product/store-products/?limit=${limit}&offset=${offset}`, 'get')
+        .then(res => {
+            console.log('product-store------------', res.data);
+            dispatch({ type: actionTypes.GET_STORE_PRODUCTS_SUCCESS, products: res.data});
+        })
+        .catch(err => {
+            dispatch({ type: actionTypes.ERROR, error: err.response.data.message})
+        })
+    }
+};
+
+export const importInStore = (QRproduct, transverProduct, productName) => {
+    return (dispatch) => {
+        request(`/product/import-in-store`, 'post', {QRproduct, transverProduct, productName})
+        .then(res => {
+            console.log(res.data);
+        })
+        .catch(err => {
+            dispatch({ type: actionTypes.ERROR, error: err.response.data.message})
+        })
+    }
+};

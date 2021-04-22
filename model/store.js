@@ -1,37 +1,36 @@
 const Sequelize = require("sequelize");
 const sequelize = require('../config/db');
 const Users = require('./users');
-const Workers = require('./worker');
-const Branches = require('./branch');
 
-const WorkerExports = sequelize.define("workerExports", {
+const Store = sequelize.define("store", {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true,
       allowNull: false
     },
+    QRproduct: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
     productName: {
       type: Sequelize.STRING,
       allowNull: false
     },
-    QRproduct: {
+    unit: {
         type: Sequelize.STRING,
         allowNull: false
-      },
+    },
     count: {
         type: Sequelize.DOUBLE,
         allowNull: false
     },
     price: {
-      type: Sequelize.DOUBLE,
-      allowNull: false
-    }
+        type: Sequelize.DOUBLE,
+        allowNull: false
+    },
   });
 
-  
-  Users.hasMany(WorkerExports);
-  Workers.hasMany(WorkerExports);
-  Branches.hasMany(WorkerExports);
+  Users.hasMany(Store);
 
-module.exports = WorkerExports; 
+module.exports = Store;

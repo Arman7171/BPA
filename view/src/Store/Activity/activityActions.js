@@ -7,6 +7,7 @@ export const getBranches = () => {
 
         request('/branch/my-branches', 'get')
         .then(res => {
+            console.log('masnacyuxer');
             dispatch({ type: actionTypes.GET_BRANCHES_SUCCESS, branches: res.data})
         })
         .catch(err => {
@@ -151,10 +152,10 @@ export const getBranchWorkers = (id) => {
     }
 };
 
-export const getBranchImports = (id) => {
+export const getBranchImports = (id, month, year) => {
     return (dispatch) => {
         dispatch({ type: actionTypes.LOADING })
-        request(`/branch/branche-imports/${id}`)
+        request(`/branch/branche-imports/${id}/?month=${month}&year=${year}`)
         .then(res => {
             console.log('branche-import--------', res);
             dispatch({ type: actionTypes.GET_BRANCH_IMPORTS_SUCCESS, importInfo: res.data})
@@ -166,10 +167,10 @@ export const getBranchImports = (id) => {
     }
 };
 
-export const getBranchExports = (id) => {
+export const getBranchExports = (id, month, year) => {
     return (dispatch) => {
         dispatch({ type: actionTypes.LOADING })
-        request(`/branch/branche-exports/${id}`)
+        request(`/branch/branche-exports/${id}/?month=${month}&year=${year}`)
         .then(res => {
             console.log('branche-exports--------', res);
             dispatch({ type: actionTypes.GET_BRANCH_EXPORTS_SUCCESS, exportInfo: res.data})
@@ -226,10 +227,11 @@ export const getExports = (month, year) => {
 };
 
 export const getIncome = (month, year) => {
+    console.log('pocos', month, year);
     return (dispatch) => {
         dispatch({ type: actionTypes.LOADING })
 
-        request(`/product/user-income/?month=${2}&year=${2021}`, 'get')
+        request(`/product/user-income/?month=${month}&year=${year}`, 'get')
         .then(res => {
             console.log('income----------', res.data);
             dispatch({ type: actionTypes.GET_INCOME_SUCCESS, obj: res.data})
@@ -239,3 +241,51 @@ export const getIncome = (month, year) => {
         })
     }
 };
+
+export const getProductsSell = (month, year) => {
+    return (dispatch) => {
+        dispatch({ type: actionTypes.LOADING })
+
+        request(`/product/top-selling-products/?month=${month}&year=${year}`, 'get')
+        .then(res => {
+            console.log('top-selling-products----------', res.data);
+            dispatch({ type: actionTypes.GET_PRODUCTS_SELLS_PRCENT, obj: res.data})
+        })
+        .catch(err => {
+            dispatch({ type: actionTypes.ERROR, error: err.message})
+        })
+    }
+};
+
+export const getSellingProducts = (month, year, branch) => {
+    return (dispatch) => {
+        dispatch({ type: actionTypes.LOADING })
+
+        request(`/product/selling-products/?month=${month}&year=${year}&branch=${branch}`, 'get')
+        .then(res => {
+            console.log('selling-products----------', res.data);
+            dispatch({ type: actionTypes.GET_SELLING_PRODUCTS, obj: res.data})
+        })
+        .catch(err => {
+            dispatch({ type: actionTypes.ERROR, error: err.message})
+        })
+    }
+};
+
+export const getSellingProductsCount = (month, year) => {
+    return (dispatch) => {
+        dispatch({ type: actionTypes.LOADING })
+
+        request(`/product/products-selling-count/?month=${month}&year=${year}`, 'get')
+        .then(res => {
+            console.log('selling-products----------', res.data);
+            // dispatch({ type: actionTypes.GET_SELLING_PRODUCTS, obj: res.data})
+        })
+        .catch(err => {
+            dispatch({ type: actionTypes.ERROR, error: err.message})
+        })
+    }
+};
+
+
+

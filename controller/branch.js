@@ -97,16 +97,21 @@ router.get('/branche-imports/:id',
             try{
                 const token = req.headers['authorization'].replace('Bearer ','');
                 info = jwt.verify(token, 'jwtSecret');
-                const imports = await ProductPlacements.findAll({where:{status: 1, branchId: req.params.id}, raw: true });
+                const AllImports = await ProductPlacements.findAll({where:{status: 1, branchId: req.params.id}, raw: true });
                 let monthImports = 0;
                 let prevMonthImports = 0;
                 let percent = 0;
-                for(i in imports){
-                    if(new Date().getMonth() === imports[i].updatedAt.getMonth()){
-                        monthImports += imports[i].productCount*imports[i].price;
+                let imports = [];
+                const month = req.query.month;
+                const year = req.query.year;
+
+                for(i in AllImports){
+                    if(month == AllImports[i].updatedAt.getMonth() && year == AllImports[i].updatedAt.getFullYear()){
+                        monthImports += AllImports[i].productCount*AllImports[i].price;
+                        imports.push(AllImports[i]);
                     }
-                    else if(new Date().getMonth()-1 === imports[i].updatedAt.getMonth()){
-                        prevMonthImports += imports[i].productCount*imports[i].price;
+                    else if(month-1 == AllImports[i].updatedAt.getMonth() && year == AllImports[i].updatedAt.getFullYear()){
+                        prevMonthImports += AllImports[i].productCount*AllImports[i].price;
                     }
                 }
                 percent = ((monthImports - prevMonthImports)/monthImports)*100;
@@ -124,17 +129,21 @@ router.get('/branche-exports/:id',
             try{
                 const token = req.headers['authorization'].replace('Bearer ','');
                 info = jwt.verify(token, 'jwtSecret');
-                const exports = await WorkerExports.findAll({where:{userId: info.userId}, raw: true });
-                console.log('exports', exports);
+                const Allexports = await WorkerExports.findAll({where:{userId: info.userId, branchId: req.params.id}, raw: true });
+                console.log('exports', Allexports);
                 let monthExports = 0;
                 let prevMonthExports = 0;
                 let percent = 0;
-                for(i in exports){
-                    if(new Date().getMonth() === exports[i].createdAt.getMonth()){
-                        monthExports += exports[i].count*exports[i].price;
+                let exports = [];
+                const month = req.query.month;
+                const year = req.query.year;
+                for(i in Allexports){
+                    if(month == Allexports[i].createdAt.getMonth() && year == Allexports[i].createdAt.getFullYear()){
+                        monthExports += Allexports[i].count*Allexports[i].price;
+                        exports.push(Allexports[i]);
                     }
-                    else if(new Date().getMonth()-1 === exports[i].createdAt.getMonth()){
-                        prevMonthExports += exports[i].count*exports[i].price;
+                    else if(month-1 == Allexports[i].createdAt.getMonth() && year == Allexports[i].createdAt.getFullYear()){
+                        prevMonthExports += Allexports[i].count*Allexports[i].price;
                     }
                 }
                 percent = ((monthExports - prevMonthExports)/monthExports)*100;
