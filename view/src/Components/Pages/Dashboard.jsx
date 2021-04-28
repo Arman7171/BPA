@@ -91,69 +91,56 @@ const Home = ({ getBranches, getProviders, getIncome, sallingPrcent, getUserImpo
                         type === 'manager' ? null :
 
                             <div className="row mb-3">
-                                <div className="col-md-6 col-xl-3">
-                                    <div className="card h-100">
-                                        <div className="card-body">
-                                            <div className="float-right mt-2">
-                                                <div id="total-revenue-chart"></div>
-                                            </div>
-                                            <div>
-                                                <h4 className="mb-1 mt-1"><span data-plugin="counterup"> {branches.length} </span></h4>
-                                                <p className="text-muted mb-0">Մասնաճյուղեր</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                      
 
-                                <div className="col-md-6 col-xl-3">
-                                    <div className="card h-100">
-                                        <div className="card-body">
-                                            <div className="float-right mt-2">
-                                                <div id="orders-chart"> </div>
-                                            </div>
-                                            <div>
-                                                <h4 className="mb-1 mt-1"><span data-plugin="counterup"> {workers.length} </span></h4>
-                                                <p className="text-muted mb-0">Աշխատակիցներ</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="col-md-6 col-xl-3">
-                                    <div className="card h-100">
-                                        <div className="card-body">
-                                            <div className="float-right mt-2">
-                                                <div id="customers-chart"> </div>
-                                            </div>
-                                            <div>
-                                                <h4 className="mb-1 mt-1"><span data-plugin="counterup"> {providers.length} </span></h4>
-                                                <p className="text-muted mb-0">Մատակարարներ</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="col-md-6 col-xl-3">
-
-                                    <div className="card h-100">
-                                        <div className="card-body">
-                                            <div className="float-right mt-2">
-                                                <div id="growth-chart"></div>
-                                            </div>
-                                            <div>
-                                                <p className="text-muted mb-0">Վերջի ամսվա Եկամուտը</p>
-                                                <h4 className="mb-1 mt-1"><span data-plugin="counterup">{income}</span> ֏</h4>
-                                            </div>
-                                            <p className="text-muted mt-3 mb-0"><span className={`${incomePracent < 0 ? 'text-danger' : 'text-success'} mr-1`}>
-                                                <FontAwesomeIcon icon={incomePracent < 0 ? faArrowDown : faArrowUp} className='mr-1' />{incomePracent?.toFixed(2)}%</span> Աճը նախորդ ամսվա համեմատ
-                                        </p>
-                                        </div>
-                                    </div>
-                                </div>
+                             
                             </div>
                     }
                     <div className="row">
                         <div className="col-xl-8">
+                            <div className="row">
+                            <div className="col-md-6 col-lg-4">
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <div className="float-right mt-2">
+                                                <div id="total-revenue-chart"></div>
+                                            </div>
+                                            <div className="d-flex align-items-center">
+                                                <h4 className="mb-1 mt-1"><span data-plugin="counterup"> {branches.length} </span></h4>
+                                                <h5 className="mb-0 ml-3">Մասնաճյուղեր</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="col-md-6 col-lg-4">
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <div className="float-right mt-2">
+                                                <div id="orders-chart"> </div>
+                                            </div>
+                                            <div className="d-flex align-items-center">
+                                                <h4 className="mb-1 mt-1"><span data-plugin="counterup"> {workers.length} </span></h4>
+                                                <h5 className="mb-0 ml-3">Աշխատակիցներ</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="col-md-6 col-lg-4">
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <div className="float-right mt-2">
+                                                <div id="customers-chart"> </div>
+                                            </div>
+                                            <div className="d-flex align-items-center">
+                                                <h4 className="mb-1 mt-1"><span data-plugin="counterup"> {providers.length} </span></h4>
+                                                <h5 className="mb-0 ml-3">Մատակարարներ</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="card">
                                 <div className="card-body">
                                     <div className="mt-1">
@@ -189,11 +176,26 @@ const Home = ({ getBranches, getProviders, getIncome, sallingPrcent, getUserImpo
                         </div>
 
                         <div className="col-xl-4">
-                            <div className="card bg-primary">
+
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="float-right mt-2">
+                                    <div id="growth-chart"></div>
+                                </div>
+                                <div>
+                                    <p className="text-muted mb-0">Վերջի ամսվա Եկամուտը</p>
+                                    <h4 className="mb-1 mt-1"><span data-plugin="counterup">{income}</span> ֏</h4>
+                                </div>
+                                <p className="text-muted mt-3 mb-0"><span className={`${incomePracent < 0 ? 'text-danger' : 'text-success'} mr-1`}>
+                                    <FontAwesomeIcon icon={incomePracent < 0 ? faArrowDown : faArrowUp} className='mr-1' />{incomePracent?.toFixed(2)}%</span> Աճը նախորդ ամսվա համեմատ
+                            </p>
+                            </div>
+                        </div>
+                            <div className="card">
                                 <div className="card-body">
                                     <div className="row align-items-center">
                                         <div className="col-sm-8">
-                                            <p className="text-white font-size-18">Մասնաճյուղերի վերաբերյալ ավելի մանրամսն իմֆորմացիա կարող եք տեսնել այստեղ</p>
+                                            <p className="font-size-18">Մասնաճյուղերի վերաբերյալ ավելի մանրամսն իմֆորմացիա կարող եք տեսնել այստեղ</p>
                                             <div className="mt-4">
                                                 <Link to="/branches" className="btn btn-success waves-effect waves-light">Տեսնել ավելին</Link>
                                             </div>

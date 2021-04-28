@@ -44,7 +44,7 @@ const Header = ({getUserInfo, name, lastName}) => {
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img className="rounded-circle header-profile-user" src="/assets/images/users/avatar-6.jpg"
                             alt="Header Avatar" />
-                        <span className="text-white d-xl-inline-block ml-1 font-weight-medium font-size-15"> {name} {lastName} </span>
+                        <span className="text-dark d-xl-inline-block ml-1 font-weight-medium font-size-15"> {name} {lastName} </span>
                         <i className="uil-angle-down d-none d-xl-inline-block font-size-15"></i>
                     </button>
                     <div className="dropdown-menu dropdown-menu-right">

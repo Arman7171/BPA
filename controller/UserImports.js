@@ -504,57 +504,74 @@ router.get('/products-selling-count', async (req, res) => {
         const month = req.query.month;
         const year = req.query.year;
         var workerExports;
-        let monthProductsSell = [];
+        let productsSell = [];
         let lastMonthProductsSell = [];
         let sellPracent = [];
         console.log('month, year------', month, year);
 
-        workerExports = await WorkerExports.findAll({where: {userId: info.userId}, raw: true});
-        
+        var workerExports = await WorkerExports.findAll({where: {userId: info.userId}, raw: true});
+        var products = await Products.findAll({ where: {userId: info.userId}, raw: true });
+
+    for(let i=0; i<products.length; i++){
+        products[i].countNow = products[i].count;
+        products[i].count = 0;
+        productsSell.push(products[i]);
+    }
+
         for(let i=0; i<workerExports.length; i++){
             let has = false;
             if(workerExports[i].createdAt.getMonth()==month && workerExports[i].createdAt.getFullYear()==year){
-                for (let j = 0; j < monthProductsSell.length; j++) {
-                   if(monthProductsSell[j].QRproduct == workerExports[i].QRproduct){
-                    monthProductsSell[j].count+=workerExports[i].count;
+                for (let j = 0; j < productsSell.length; j++) {
+                   if(productsSell[j].QRproduct == workerExports[i].QRproduct){
+                    productsSell[j].count+=workerExports[i].count;
                     has = true;
                     break;
                    }
                 }
                 if(!has){
-                    monthProductsSell.push(workerExports[i]);
+                    productsSell.push(workerExports[i]);
                 }
             }
-            else if(workerExports[i].createdAt.getMonth()==month-1 && workerExports[i].createdAt.getFullYear()==year){
-                for (let j = 0; j < lastMonthProductsSell.length; j++) {
-                    if(lastMonthProductsSell[j].QRproduct == workerExports[i].QRproduct){
-                     lastMonthProductsSell[j].count+=workerExports[i].count;
-                     has = true;
-                     break;
+        }
+
+        for (let j = 0; j < productsSell.length; j++) {
+            productsSell[j].month1Count = 0;
+            productsSell[j].month2Count = 0;
+            productsSell[j].month3Count = 0;
+         }
+
+        for(let i=0; i<workerExports.length; i++){
+            if(workerExports[i].createdAt.getMonth()==month-1 && workerExports[i].createdAt.getFullYear()==year){
+                for (let j = 0; j < productsSell.length; j++) {
+                   if(productsSell[j].QRproduct == workerExports[i].QRproduct){
+                    productsSell[j].month1Count+=workerExports[i].count;
                     }
-                 }
-                 if(!has){
-                     lastMonthProductsSell.push(workerExports[i]);
-                 }
-            }
-        }
-        for(let i=0; i<monthProductsSell.length; i++){
-            let has = false;
-            for(let j=0; j<lastMonthProductsSell.length; j++){
-                if(monthProductsSell[i].QRproduct==lastMonthProductsSell[j].QRproduct){
-                    var prcent = ((monthProductsSell[i].count-lastMonthProductsSell[j].count)/monthProductsSell[i].count)*100;
-                    has = true;
-                    break;
                 }
             }
-            if(!has){
-                sellPracent.push({prcent: 100, name: monthProductsSell[i].productName});
-            }
-            else{
-                sellPracent.push({prcent: +Math.abs(prcent).toFixed(2), name: monthProductsSell[i].productName});
+        }
+
+        for(let i=0; i<workerExports.length; i++){
+            if(workerExports[i].createdAt.getMonth()==month-2 && workerExports[i].createdAt.getFullYear()==year){
+                for (let j = 0; j < productsSell.length; j++) {
+                    if(productsSell[j].QRproduct == workerExports[i].QRproduct){
+                        productsSell[j].month2Count+=workerExports[i].count;
+                    }
+                }
             }
         }
-            res.status(200).json({sellPracent, monthProductsSell});
+
+        for(let i=0; i<workerExports.length; i++){
+            if(workerExports[i].createdAt.getMonth()==month-3 && workerExports[i].createdAt.getFullYear()==year){
+                for (let j = 0; j < productsSell.length; j++) {
+                    if(productsSell[j].QRproduct == workerExports[i].QRproduct){
+                        productsSell[j].month3Count+=workerExports[i].count;
+                    }
+                }
+            }
+        }
+
+
+            res.status(200).json(productsSell);
         }
     catch{
         res.status(500).json({ message: 'server error try again' });

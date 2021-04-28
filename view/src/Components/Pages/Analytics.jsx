@@ -9,9 +9,10 @@ import BarChart from "../BarChart";
 import Chart from "../Chart";
 import { getBranches, getSellingProducts, getSellingProductsCount } from '../../Store/Activity/activityActions';
 
-const Analytics = ({ getBranches, getIncome, incomePracent, income, getSellingProductsCount, importsChartData, sallingProduct, getSellingProducts, exportsChartData }) => {
+const Analytics = ({ getBranches, getIncome, incomePracent, income, getSellingProductsCount, importsChartData, sallingProduct, productCount, exportsChartData }) => {
     const { id } = useParams();
     const [month, setMonth] = useState(new Date().getMonth());
+    const [productMonth, setProductMonth] = useState(new Date().getMonth());
     const [year,] = useState(new Date().getFullYear());
     const [branch, setBranch] = useState('all');
     const [importsData, setImportsData] = useState([]);
@@ -22,7 +23,7 @@ const Analytics = ({ getBranches, getIncome, incomePracent, income, getSellingPr
     const [productLable, setProductLable] = useState([]);
     const [prcentData, setPrcentData] = useState([]);
     const [prcentLable, setPrcentLable] = useState([]);
-    const [monthValues, ] = useState(['Հունվար', 'Փետրվար', 'Մարտ', 'Ապրիլ', 'Մայիս', 'Հունիս', 'Հուլիս', 'Օգոստոս', 'Սեպտեմբեր', 'Հոտեմբեր', 'Նոյեմբեր', 'Դեկտեմբեր']);
+    const [monthValues,] = useState(['Հունվար', 'Փետրվար', 'Մարտ', 'Ապրիլ', 'Մայիս', 'Հունիս', 'Հուլիս', 'Օգոստոս', 'Սեպտեմբեր', 'Հոտեմբեր', 'Նոյեմբեր', 'Դեկտեմբեր']);
 
 
     useEffect(() => {
@@ -85,7 +86,7 @@ const Analytics = ({ getBranches, getIncome, incomePracent, income, getSellingPr
             setExportsLable([]);
         }
     }, [exportsChartData]);
-    
+
 
     const getMonths = () => {
         let Months = [];
@@ -99,6 +100,15 @@ const Analytics = ({ getBranches, getIncome, incomePracent, income, getSellingPr
         setMonth(val);
         getIncome(val, year);
 
+    };
+
+    const checkProductsMonth = (val) => {
+        setProductMonth(val);
+        getSellingProductsCount(val, year);
+    };
+
+    const averageQuantity = (val1, val2, val3) => {
+        return Math.round((val1 + val2 + val3)/3);
     };
 
     return (
@@ -137,8 +147,8 @@ const Analytics = ({ getBranches, getIncome, incomePracent, income, getSellingPr
                                         <h4 className="mb-1 mt-1"><span data-plugin="counterup">{income}</span> ֏</h4>
                                     </div>
                                     <p className="text-muted mt-3 mb-0">
-                                    <span className={`${incomePracent < 0 ? 'text-danger' : 'text-success'} mr-1`}>
-                                        <FontAwesomeIcon icon={incomePracent < 0 ? faArrowDown : faArrowUp} className='mr-1' />{incomePracent?.toFixed(2)}%
+                                        <span className={`${incomePracent < 0 ? 'text-danger' : 'text-success'} mr-1`}>
+                                            <FontAwesomeIcon icon={incomePracent < 0 ? faArrowDown : faArrowUp} className='mr-1' />{incomePracent?.toFixed(2)}%
                                         </span> Աճը նախորդ ամսվա համեմատ
                                     </p>
                                 </div>
@@ -164,13 +174,38 @@ const Analytics = ({ getBranches, getIncome, incomePracent, income, getSellingPr
                                 y={false}
                             />
                         </div>
-                        <h4 className="mx-3 text-center text-light">
-                            Ապրանքների Վիճակագրությունը
-                        </h4>
-                        <div className="row">
-                            <div className="col-4">
-                                
+                        <div className="col-12">
+                            <div className="page-title-box d-flex align-items-center justify-content-between mt-5">
+                                <h3 className="mb-0 text-light">Ապրանքների վիճակագրություն</h3>
+                                <div className='d-flex justify-content-between w-25'>
+                                    <select style={{ width: '155px' }} name="" id="name" defaultValue={productMonth} className='form-control mr-2' onChange={(e) => checkProductsMonth(e.target.value)}>
+                                        {getMonths()}
+                                    </select>
+                                    <select style={{ width: '155px' }} defaultValue={year} name="" id="name" className='form-control'>
+                                        <option value={2021}>2021</option>
+                                    </select>
+                                </div>
                             </div>
+                        </div>
+                        <div className="row">
+                            {
+                                productCount.map((product, index) => {
+                                    return (
+                                        <div className="col-3 text-light mt-5" key={index}>
+                                            <h6 className="text-center mb-4">{product.productName} (#{product.QRproduct})</h6>
+                                             <BarChart
+                                                data={[product.month1Count*product.saleprice, product.month2Count*product.saleprice, product.month3Count*product.saleprice]}
+                                                lables={[monthValues[month-1],monthValues[month-2],monthValues[month-3]]}
+                                                lable="( ֏ )"
+                                                borderColor="rgba(3, 255, 61 ,1)"
+                                                y={false}
+                                            />
+                                            <h6 className="mt-4">Միջին նվազագույն քանակ {averageQuantity(product.month1Count, product.month2Count, product.month3Count)}</h6>
+                                            <h6 className="mt-4">Առկա քանակ <span className={`${product.countNow > averageQuantity(product.month1Count, product.month2Count, product.month3Count) ? 'text-success' : 'text-danger'}`}>{product.countNow}</span></h6>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>
                     </div>
                 </div>
@@ -188,6 +223,7 @@ const mapStateToProps = (state) => {
         incomePracent: state.activityReducer.incomePracent,
         importsChartData: state.activityReducer.importsChartData,
         exportsChartData: state.activityReducer.exportsChartData,
+        productCount: state.activityReducer.productCount
     }
 }
 

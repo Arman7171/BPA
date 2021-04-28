@@ -187,7 +187,7 @@ const BranchInfo = ({ branchWorkers, branchImports, getBranchProducts, branchPro
                                 data={importData}
                                 lables={importLable}
                                 lable="Մոտք ( ֏ )"
-                                borderColor="rgba(255,99,132,1)"
+                                borderColor="rgba(3, 255, 61 ,1)"
                             />
                         </div>
                         <div className="mt-5">

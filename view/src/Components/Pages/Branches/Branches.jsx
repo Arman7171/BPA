@@ -55,8 +55,8 @@ const Branches = (props) => {
                                 <h4 className="mb-0">Մասնաճուղեր</h4>
                                 <div className="page-title-right">
                                     <ol className="breadcrumb m-0">
-                                        <li className="breadcrumb-item"><Link to="">Contacts</Link></li>
-                                        <li className="breadcrumb-item active">User List</li>
+                                        <li className="breadcrumb-item"><Link to="">Մասնաճուղեր</Link></li>
+                                        <li className="breadcrumb-item active">BPA</li>
                                     </ol>
                                 </div>
                             </div>
@@ -77,19 +77,6 @@ const Branches = (props) => {
                                                     </button>
                                             </div>
                                         </div>
-                                        <div className="col-md-6">
-                                            <div className="form-inline float-md-right mb-3">
-                                                <div className="search-box ml-2">
-                                                    <div className="position-relative d-flex align-items-center">
-                                                        <input type="text" className="form-control rounded bg-light border-0" placeholder="Search..." />
-                                                        <FontAwesomeIcon className='search-icon' icon={faSearch} />
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-
-
                                     </div>
                                     <div className="table-responsive mb-4">
                                         <table className="table table-centered table-nowrap mb-0">

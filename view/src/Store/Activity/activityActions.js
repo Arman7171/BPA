@@ -279,7 +279,7 @@ export const getSellingProductsCount = (month, year) => {
         request(`/product/products-selling-count/?month=${month}&year=${year}`, 'get')
         .then(res => {
             console.log('selling-products----------', res.data);
-            // dispatch({ type: actionTypes.GET_SELLING_PRODUCTS, obj: res.data})
+            dispatch({ type: actionTypes.GET_SELLING_PRODUCTS_COUNT, products: res.data})
         })
         .catch(err => {
             dispatch({ type: actionTypes.ERROR, error: err.message})

@@ -28,7 +28,8 @@ export const defaultState = {
     sallingPrcent: [],
     sallingProduct: [],
     importsChartData: [],
-    exportsChartData: []
+    exportsChartData: [],
+    productCount: []
 };
 
 
@@ -222,7 +223,13 @@ export const activityReducer = (state = defaultState, action) => {
                 loading: false
             }
         };
-        
+        case actionTypes.GET_SELLING_PRODUCTS_COUNT:{
+            return{
+                ...state,
+                productCount: action.products,
+                loading: false
+            }
+        };
         default: return state;
     }
 };

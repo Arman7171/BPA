@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -10,6 +8,7 @@ const Products = ({getUserProducts, getProductsCount, products, productCount}) =
 
     const [limit, setLimit] = useState(8);
     const [offset, setOffest] = useState(0);
+    const [userProducts, setUserProducts] = useState([]);
 
     useEffect(() => {
         getProductsCount();
@@ -22,6 +21,15 @@ const Products = ({getUserProducts, getProductsCount, products, productCount}) =
         setOffest(offset+8);
     }
 
+    useEffect(() => {
+        console.log('products.length----------', products.length);
+        if(products.length>0){
+        setUserProducts((prevval) => {
+            return prevval.concat(products)
+        })
+    }
+    }, [products]);
+
 
     return (
         <div className="main-content">
@@ -33,8 +41,8 @@ const Products = ({getUserProducts, getProductsCount, products, productCount}) =
                                 <h4 className="mb-0">Ապրանքներ</h4>
                                 <div className="page-title-right">
                                     <ol className="breadcrumb m-0">
-                                        <li className="breadcrumb-item"><Link to="">Contacts</Link></li>
-                                        <li className="breadcrumb-item active">User List</li>
+                                        <li className="breadcrumb-item"><Link to="">Ապրանքներ</Link></li>
+                                        <li className="breadcrumb-item active">BPA</li>
                                     </ol>
                                 </div>
                             </div>
@@ -46,17 +54,6 @@ const Products = ({getUserProducts, getProductsCount, products, productCount}) =
                                 <div className="card-body">
                                     <div className="row mb-2">
                                         <div className="col-md-6">
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-inline float-md-right mb-3">
-                                                <div className="search-box ml-2">
-                                                    <div className="position-relative d-flex align-items-center">
-                                                        <input type="text" className="form-control rounded bg-light border-0" placeholder="Search..." />
-                                                        <FontAwesomeIcon className='search-icon text-dark' icon={faSearch} />
-                                                    </div>
-                                                </div>
-
-                                            </div>
                                         </div>
 
 
@@ -75,11 +72,11 @@ const Products = ({getUserProducts, getProductsCount, products, productCount}) =
                                             </thead>
                                             <tbody>
                                                 {
-                                                    products.map((product) => {
+                                                    userProducts.map((product) => {
                                                         return (
                                                             <tr key={product.id}>
                                                                 <td>
-                                                                    <Link to="#" className="text-body"> {product.productName} </Link>
+                                                                   {product.productName}
                                                                 </td>
                                                                 <td> {product.QRproduct} </td>
                                                                 <td> {product.count} {product.unit} </td>

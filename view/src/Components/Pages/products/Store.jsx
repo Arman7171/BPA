@@ -62,23 +62,6 @@ const Store = ({getStoreProducts, products, getBranches, branches, productCount}
                         <div className="col-lg-12">
                             <div className="card">
                                 <div className="card-body">
-                                    <div className="row mb-2">
-                                        <div className="col-md-6">
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-inline float-md-right mb-3">
-                                                <div className="search-box ml-2">
-                                                    <div className="position-relative d-flex align-items-center">
-                                                        <input type="text" className="form-control rounded bg-light border-0" placeholder="Search..." />
-                                                        <FontAwesomeIcon className='search-icon text-dark' icon={faSearch} />
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-
-
-                                    </div>
                                     <div className="table-responsive mb-4">
                                         <table className="table table-centered table-nowrap mb-0">
                                             <thead>
@@ -98,7 +81,7 @@ const Store = ({getStoreProducts, products, getBranches, branches, productCount}
                                                         return (
                                                             <tr key={product.id}>
                                                                 <td>
-                                                                    <Link to="#" className="text-body"> {product.productName} </Link>
+                                                                    {product.productName}
                                                                 </td>
                                                                 <td> {product.QRproduct} </td>
                                                                 <td> {product.count} {product.unit} </td>
